@@ -1,0 +1,268 @@
+\documentclass[uplatex,a4paper,oneside,openany,dvipdfmx]{jsarticle}
+
+\title{パターン認識と機械学習\\第3章\ 線形回帰モデル}
+\author{鈴木拓己}
+\date{\today}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{color}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{caption}
+\usepackage[subrefformat=parens]{subcaption}
+\usepackage{overpic}
+\usepackage{mathtools}
+\usepackage{comment}
+\usepackage[margin=25mm]{geometry}
+\usepackage{enumerate}
+\usepackage{ascmac}
+\usepackage{framed}
+\usepackage{type1cm}
+\usepackage[dvipdfmx]{hyperref, graphicx, color}
+\usepackage{cite}
+\usepackage{tcolorbox}
+%\usepackage{natbib}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{第3章 線形回帰モデル}
+\rhead{}
+\renewcommand{\headrulewidth}{0pt}
+
+% 数式番号の設定
+\numberwithin{equation}{section}
+% 参照する数式のみナンバリングする
+\mathtoolsset{showonlyrefs=true}
+
+% tikzの設定
+\usepackage{tikz}
+\usetikzlibrary{intersections, calc, arrows.meta}
+%\usetikzlibrary{cd}
+%\usepackage{tikz-cd}
+
+% 可換図式
+\usepackage[all]{xy}
+
+% ハイパーリンクの設定
+%\usepackage{xcolor}
+%\hypersetup{
+%    colorlinks=false,
+%    citebordercolor=green,
+%    linkbordercolor=red,
+%    urlbordercolor=cyan,
+%}
+
+\usepackage{pxjahyper}
+\hypersetup{
+	colorlinks=false,   %リンクに色をつけない設定
+	bookmarks=true,     %以下ブックマークに関する設定
+	bookmarksnumbered=true,
+	pdfborder={0 0 0},
+	bookmarkstype=toc
+}
+
+%\usepackage{xcolor}
+%\hypersetup{
+%    colorlinks=false,
+%    citebordercolor=green,
+%    linkbordercolor=red,
+%    urlbordercolor=cyan,
+%}
+
+\renewcommand{\thepart}{\arabic{section}}
+
+%\renewcommand{\labelenumi}{(\roman{enumi})}
+%\SetLabelAlign{Center}{\hfil#1\hfil}
+%\SetLabelAlign{CenterWithParen}{\hfil(\makebox[0.8em]{#1})\hfil}
+
+%\renewcommand{\proofname}{Proof}
+
+\makeatletter % use at mark
+\renewenvironment{proof}[1][\proofname]{\par
+  \pushQED{\qed}%
+  \normalfont \topsep6\p@\@plus6\p@\relax
+  \trivlist
+  \item[\hskip\labelsep
+        \itshape
+    %{\bf\underline{#1}}]\ignorespaces
+     {#1\@addpunct{.}}]\ignorespaces % ピリオドあり
+}{%
+  \popQED\endtrivlist\@endpefalse
+}
+\makeatother % end at mark
+
+\newtheoremstyle{mystyle}%   % スタイル名
+    {}%                      % 上部スペース
+    {}%                      % 下部スペース
+    {\normalfont}%           % 本文フォント
+    {}%                      % インデント量
+    {\rm}%                   % 見出しフォント
+    {}%                      % 見出し後の句読点, '.'
+    { }%                     % 見出し後のスペース, ' ' or \newline
+    {\thmname{#1}\thmnumber{#2}\thmnote{\ (#3)\ }}%
+                             % 見出しの書式 (can be left empty, meaning `normal')
+\theoremstyle{mystyle} % スタイルの適用
+
+% 数式の定義環境
+\captionsetup{compatibility=false}
+\newtheorem{definition}{Definition\ }[section]
+\newtheorem{theorem}{Theorem\ }[section]
+\newtheorem{proposition}{Proposition\ }[section]
+\newtheorem{lemma}{Lemma\ }[section]
+\newtheorem{corollary}{Corollary\ }[section]
+\newtheorem{remark}{Remark\ }[section]
+\newtheorem{example}{Example\ }[section]
+\newtheorem{claim}{Claim\ }[section]
+\newtheorem{axiom}{Axiom\ }[section]
+\def\co{\colon\thinspace}
+
+\tcbuselibrary{theorems,breakable} %% を読み込む
+%%%%% 下記をプリアンブルに
+\definecolor{burgundy}{rgb}{0.5, 0.0, 0.13}
+\newtcbtheorem[number within=section]{thm}{Theorem.}%
+{fonttitle=\gtfamily\sffamily\bfseries\upshape,
+colframe=burgundy,colback=burgundy!2!white,
+rightrule=0pt,leftrule=0pt,bottomrule=2pt,
+colbacktitle=burgundy,theorem style=standard,breakable,arc=0pt}{tha}
+%%%%% 上記をプリアンブルに
+
+% コマンドの設定
+%% ボールド体
+\newcommand{\BC}{\mathbb{C}}
+\newcommand{\BE}{\mathbb{E}}
+\newcommand{\BK}{\mathbb{K}}
+\newcommand{\BL}{\mathbb{L}}
+\newcommand{\BN}{\mathbb{N}}
+\newcommand{\BP}{\mathbb{P}}
+\newcommand{\BQ}{\mathbb{Q}}
+\newcommand{\BR}{\mathbb{R}}
+\newcommand{\BV}{\mathbb{V}}
+\newcommand{\BZ}{\mathbb{Z}}
+%% スクリプト体
+\newcommand{\CA}{\mathcal{A}}
+\newcommand{\CB}{\mathcal{B}}
+\newcommand{\CC}{\mathcal{C}}
+\newcommand{\CD}{\mathcal{D}}
+\newcommand{\CE}{\mathcal{E}}
+\newcommand{\CF}{\mathcal{F}}
+\newcommand{\CG}{\mathcal{G}}
+\newcommand{\CH}{\mathcal{H}}
+\newcommand{\CI}{\mathcal{I}}
+\newcommand{\CJ}{\mathcal{J}}
+\newcommand{\CK}{\mathcal{K}}
+\newcommand{\CL}{\mathcal{L}}
+\newcommand{\CM}{\mathcal{M}}
+\newcommand{\CN}{\mathcal{N}}
+\newcommand{\CO}{\mathcal{O}}
+\newcommand{\CP}{\mathcal{P}}
+\newcommand{\CQ}{\mathcal{Q}}
+\newcommand{\CR}{\mathcal{R}}
+\newcommand{\CS}{\mathcal{S}}
+\newcommand{\CT}{\mathcal{T}}
+\newcommand{\CU}{\mathcal{U}}
+\newcommand{\CV}{\mathcal{V}}
+\newcommand{\CW}{\mathcal{W}}
+\newcommand{\CX}{\mathcal{X}}
+\newcommand{\CY}{\mathcal{Y}}
+\newcommand{\CZ}{\mathcal{Z}}
+%% 花文字
+\newcommand{\SE}{\mathscr{E}}
+\newcommand{\SM}{\mathscr{M}}
+%% ドイツ文字
+\newcommand{\mf}[1]{\mathfrak{S}}
+%% 花文字
+\newcommand{\scr}[1]{\mathscr{#1}}
+%% 数式モード中のローマン体
+\newcommand{\mr}[1]{\mathrm{#1}}
+%% 数式モード中のボールド体
+\newcommand{\mb}[1]{\mathbf{#1}}
+%% 数式モード中のテキスト
+\newcommand{\trm}[1]{\textrm{#1}}
+%% ボールド体
+\newcommand{\tb}[1]{\textbf{#1}}
+%% 内積とか
+\newcommand{\ip}[1]{\left \langle #1 \right \rangle}
+%% 微分演算子(ライプニッツの記法)
+\newcommand{\diff}[2]{\frac{d}{d#1} {#2}}
+%% ボールドシンボル
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+%\newcommand{\1}{\bs{1}}
+%\newcommand{\0}{\bs{0}}
+%% イタリック体
+\newcommand{\ti}[1]{\textit{#1}}
+%% 偏微分の記号
+\newcommand{\pd}[1]{\partial#1}
+%% 一般線形群
+\newcommand{\GL}[2]{GL_{#1}{#2}}
+%% such that
+\newcommand{\st}{\mathrm{\ s.t.\ }}
+%% 恒等写像
+\newcommand{\id}[1]{\mathrm{id}_{#1}}
+%% ノルム
+\newcommand{\norm}[1]{\|#1\|}
+%\newcommand{\H}{\mathop{\mathrm{H}}\nolimits}
+%% パーシステントホモロジー
+\newcommand{\PH}{\mathop{PH}\nolimits}
+%% 圏
+\newcommand{\catname}[1]{\mathbf{#1}}
+\newcommand{\dualcatname}[1]{\mathbf{#1}^{\textrm{op}}}
+\newcommand{\ob}{\mathrm{Ob}}
+\newcommand{\uni}{\mathfrak{U}}
+%% 関数の台
+\newcommand{\supp}[1]{\mathrm{supp}(#1)}
+%\newcommand{\Hom}{\mathrm{Hom}}
+%% 随伴
+\newcommand{\ad}[1]{\mathrm{ad}(#1)}
+
+% argmin,argmaxのコマンド
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+% 線形代数のコマンド
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\Det}{Det}
+\DeclareMathOperator{\Log}{Log}
+\DeclareMathOperator{\rank}{rank}
+%\DeclareMathOperator{\rk}{rk}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\corank}{corank}
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\coker}{coker}
+\DeclareMathOperator{\Coker}{Coker}
+
+% 圏論のコマンド
+\DeclareMathOperator{\Hom}{Hom}
+
+\allowdisplaybreaks[1]
+
+\begin{document}
+\maketitle
+\setcounter{tocdepth}{3}
+
+\tableofcontents
+
+\begin{abstract}
+    hogehoge
+\end{abstract}
+
+\setcounter{section}{2}
+\section{線形回帰モデル}
+
+\subsection{線形基底関数モデル}
+
+\subsection{バイアス--バリアンス分解}
+
+\subsection{ベイズ線形回帰}
+
+\subsection{ベイズモデル比較}
+
+\subsection{エビデンス近似}
+
+\subsection{固定された基底関数の限界}
+
+\subsection{演習問題}
+
+\end{document}

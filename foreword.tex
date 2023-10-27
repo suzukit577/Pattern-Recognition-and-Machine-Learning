@@ -1,0 +1,305 @@
+\documentclass[uplatex,a4paper,oneside,openany,dvipdfmx]{jsarticle}
+
+\title{パターン認識と機械学習\\まえがき}
+\author{鈴木拓己}
+\date{\today}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{color}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{caption}
+\usepackage[subrefformat=parens]{subcaption}
+\usepackage{overpic}
+\usepackage{mathtools}
+\usepackage{comment}
+\usepackage[margin=25mm]{geometry}
+\usepackage{enumerate}
+\usepackage{ascmac}
+\usepackage{framed}
+\usepackage{type1cm}
+\usepackage[dvipdfmx]{hyperref, graphicx, color}
+\usepackage{cite}
+\usepackage{tcolorbox}
+%\usepackage{natbib}
+
+% 数式番号の設定
+\numberwithin{equation}{section}
+% 参照する数式のみナンバリングする
+\mathtoolsset{showonlyrefs=true}
+
+% tikzの設定
+\usepackage{tikz}
+\usetikzlibrary{intersections, calc, arrows.meta}
+%\usetikzlibrary{cd}
+%\usepackage{tikz-cd}
+
+% 可換図式
+\usepackage[all]{xy}
+
+% ハイパーリンクの設定
+%\usepackage{xcolor}
+%\hypersetup{
+%    colorlinks=false,
+%    citebordercolor=green,
+%    linkbordercolor=red,
+%    urlbordercolor=cyan,
+%}
+
+\usepackage{pxjahyper}
+\hypersetup{
+	colorlinks=false,   %リンクに色をつけない設定
+	bookmarks=true,     %以下ブックマークに関する設定
+	bookmarksnumbered=true,
+	pdfborder={0 0 0},
+	bookmarkstype=toc
+}
+
+%\usepackage{xcolor}
+%\hypersetup{
+%    colorlinks=false,
+%    citebordercolor=green,
+%    linkbordercolor=red,
+%    urlbordercolor=cyan,
+%}
+
+\renewcommand{\thepart}{\arabic{section}}
+
+%\renewcommand{\labelenumi}{(\roman{enumi})}
+%\SetLabelAlign{Center}{\hfil#1\hfil}
+%\SetLabelAlign{CenterWithParen}{\hfil(\makebox[0.8em]{#1})\hfil}
+
+%\renewcommand{\proofname}{Proof}
+
+\makeatletter % use at mark
+\renewenvironment{proof}[1][\proofname]{\par
+  \pushQED{\qed}%
+  \normalfont \topsep6\p@\@plus6\p@\relax
+  \trivlist
+  \item[\hskip\labelsep
+        \itshape
+    %{\bf\underline{#1}}]\ignorespaces
+     {#1\@addpunct{.}}]\ignorespaces % ピリオドあり
+}{%
+  \popQED\endtrivlist\@endpefalse
+}
+\makeatother % end at mark
+
+\newtheoremstyle{mystyle}%   % スタイル名
+    {}%                      % 上部スペース
+    {}%                      % 下部スペース
+    {\normalfont}%           % 本文フォント
+    {}%                      % インデント量
+    {\rm}%                   % 見出しフォント
+    {}%                      % 見出し後の句読点, '.'
+    { }%                     % 見出し後のスペース, ' ' or \newline
+    {\thmname{#1}\thmnumber{#2}\thmnote{\ (#3)\ }}%
+                             % 見出しの書式 (can be left empty, meaning `normal')
+\theoremstyle{mystyle} % スタイルの適用
+
+% 数式の定義環境
+\captionsetup{compatibility=false}
+\newtheorem{definition}{Definition\ }[section]
+\newtheorem{theorem}{Theorem\ }[section]
+\newtheorem{proposition}{Proposition\ }[section]
+\newtheorem{lemma}{Lemma\ }[section]
+\newtheorem{corollary}{Corollary\ }[section]
+\newtheorem{remark}{Remark\ }[section]
+\newtheorem{example}{Example\ }[section]
+\newtheorem{claim}{Claim\ }[section]
+\newtheorem{axiom}{Axiom\ }[section]
+\def\co{\colon\thinspace}
+
+\tcbuselibrary{theorems,breakable} %% を読み込む
+%%%%% 下記をプリアンブルに
+\definecolor{burgundy}{rgb}{0.5, 0.0, 0.13}
+\newtcbtheorem[number within=section]{thm}{Theorem.}%
+{fonttitle=\gtfamily\sffamily\bfseries\upshape,
+colframe=burgundy,colback=burgundy!2!white,
+rightrule=0pt,leftrule=0pt,bottomrule=2pt,
+colbacktitle=burgundy,theorem style=standard,breakable,arc=0pt}{tha}
+%%%%% 上記をプリアンブルに
+
+% コマンドの設定
+%% ボールド体
+\newcommand{\BC}{\mathbb{C}}
+\newcommand{\BE}{\mathbb{E}}
+\newcommand{\BK}{\mathbb{K}}
+\newcommand{\BL}{\mathbb{L}}
+\newcommand{\BN}{\mathbb{N}}
+\newcommand{\BP}{\mathbb{P}}
+\newcommand{\BQ}{\mathbb{Q}}
+\newcommand{\BR}{\mathbb{R}}
+\newcommand{\BV}{\mathbb{V}}
+\newcommand{\BZ}{\mathbb{Z}}
+%% スクリプト体
+\newcommand{\CA}{\mathcal{A}}
+\newcommand{\CB}{\mathcal{B}}
+\newcommand{\CC}{\mathcal{C}}
+\newcommand{\CD}{\mathcal{D}}
+\newcommand{\CE}{\mathcal{E}}
+\newcommand{\CF}{\mathcal{F}}
+\newcommand{\CG}{\mathcal{G}}
+\newcommand{\CH}{\mathcal{H}}
+\newcommand{\CI}{\mathcal{I}}
+\newcommand{\CJ}{\mathcal{J}}
+\newcommand{\CK}{\mathcal{K}}
+\newcommand{\CL}{\mathcal{L}}
+\newcommand{\CM}{\mathcal{M}}
+\newcommand{\CN}{\mathcal{N}}
+\newcommand{\CO}{\mathcal{O}}
+\newcommand{\CP}{\mathcal{P}}
+\newcommand{\CQ}{\mathcal{Q}}
+\newcommand{\CR}{\mathcal{R}}
+\newcommand{\CS}{\mathcal{S}}
+\newcommand{\CT}{\mathcal{T}}
+\newcommand{\CU}{\mathcal{U}}
+\newcommand{\CV}{\mathcal{V}}
+\newcommand{\CW}{\mathcal{W}}
+\newcommand{\CX}{\mathcal{X}}
+\newcommand{\CY}{\mathcal{Y}}
+\newcommand{\CZ}{\mathcal{Z}}
+%% 花文字
+\newcommand{\SE}{\mathscr{E}}
+\newcommand{\SM}{\mathscr{M}}
+%% ドイツ文字
+\newcommand{\mf}[1]{\mathfrak{S}}
+%% 花文字
+\newcommand{\scr}[1]{\mathscr{#1}}
+%% 数式モード中のローマン体
+\newcommand{\mr}[1]{\mathrm{#1}}
+%% 数式モード中のボールド体
+\newcommand{\mb}[1]{\mathbf{#1}}
+%% 数式モード中のテキスト
+\newcommand{\trm}[1]{\textrm{#1}}
+%% ボールド体
+\newcommand{\tb}[1]{\textbf{#1}}
+%% 内積とか
+\newcommand{\ip}[1]{\left \langle #1 \right \rangle}
+%% 微分演算子(ライプニッツの記法)
+\newcommand{\diff}[2]{\frac{d}{d#1} {#2}}
+%% ボールドシンボル
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+%\newcommand{\1}{\bs{1}}
+%\newcommand{\0}{\bs{0}}
+%% イタリック体
+\newcommand{\ti}[1]{\textit{#1}}
+%% 偏微分の記号
+\newcommand{\pd}[1]{\partial#1}
+%% 一般線形群
+\newcommand{\GL}[2]{GL_{#1}{#2}}
+%% such that
+\newcommand{\st}{\mathrm{\ s.t.\ }}
+%% 恒等写像
+\newcommand{\id}[1]{\mathrm{id}_{#1}}
+%% ノルム
+\newcommand{\norm}[1]{\|#1\|}
+%\newcommand{\H}{\mathop{\mathrm{H}}\nolimits}
+%% パーシステントホモロジー
+\newcommand{\PH}{\mathop{PH}\nolimits}
+%% 圏
+\newcommand{\catname}[1]{\mathbf{#1}}
+\newcommand{\dualcatname}[1]{\mathbf{#1}^{\textrm{op}}}
+\newcommand{\ob}{\mathrm{Ob}}
+\newcommand{\uni}{\mathfrak{U}}
+%% 関数の台
+\newcommand{\supp}[1]{\mathrm{supp}(#1)}
+%\newcommand{\Hom}{\mathrm{Hom}}
+%% 随伴
+\newcommand{\ad}[1]{\mathrm{ad}(#1)}
+
+% argmin,argmaxのコマンド
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+% 線形代数のコマンド
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\Det}{Det}
+\DeclareMathOperator{\Log}{Log}
+\DeclareMathOperator{\rank}{rank}
+%\DeclareMathOperator{\rk}{rk}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\corank}{corank}
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\coker}{coker}
+\DeclareMathOperator{\Coker}{Coker}
+
+% 圏論のコマンド
+\DeclareMathOperator{\Hom}{Hom}
+
+\allowdisplaybreaks[1]
+
+\begin{document}
+\maketitle
+\setcounter{tocdepth}{3}
+
+% \tableofcontents
+
+\renewcommand{\thesection}{\Alph{section}}
+\renewcommand{\thesubsection}{\thesection-\arabic{subsection}}
+
+\section*{まえがき}
+
+\tb{パターン認識} (pattern recognition) は工学を起源とするが，\tb{機械学習} (machine learning) は計算機科学の分野から生じている．しかし，これらの研究活動内容は，同じ分野を2つの側面から見たものとみなせ，両分野ともこの10年間に大きく発展した．中でも，限られた専門家のものであったベイズ的手法は，主流の手法へと成長した．その一方で，グラフィカルモデルは，確立モデルを記述し，適用するための汎用的な枠組みとして進展してきた．また，ベイズ的手法は，変分ベイズ法や EP 法などの近似推論アルゴリズムが開発されたことで，より広範囲の現実の問題に適用されるようになった．同様に，カーネルを用いた新たなモデルも，アルゴリズムや応用分野に大きな影響を与えている．
+
+この新しい教科書は，近年の研究成果を反映する一方，パターン認識と機械学習の包括的な入門書でもある．本書は，学部3,4年生や，博士課程の初年度の学生の他，研究者や開発者をも対象としている．本書を理解するのに，パターン認識や機械学習について，あらかじめ何も知らなくてよいが，多変数微積分や基礎的な線形代数についての知識は必要である．また，確率について精通していれば，本書の理解に役立つ．だが，本書には基礎的な確率論についての解説もあるので，知らなくてかまわない．
+
+本書の扱う内容は広範囲にわたるため，すべての参考文献を網羅するのは不可能である．特に，いろいろな考えの正確な歴史的な意義について，説明しようとはしていない．その代わり，本書より詳細な内容を扱った．または，進展させた内容への入り口となるような，参考文献を挙げるようにした．そのため，原論文より，近年の教科書や解説論文を参考文献として主に挙げてある．
+
+本書には，講義資料や本書で使われたすべての図表など，多数の追加資料が用意されている．これらについての最新情報を得るには次の Web ページを参照されたい．
+
+\begin{center}
+    \fbox{\url{http://research.microsoft.com/~cmbishop/PRML}}
+\end{center}
+
+\section*{演習問題}
+
+本書では，各章末の演習問題も重視している．問題には，本文で説明した概念を発展させたり，新たな手法を開発したり，手法を一般化するのに役立つようなものを注意深く選んだ．問題には難易度も示し，\tb{（基本）}は数分で解けるような簡単なもの，\tb{（難問）}は非常に複雑な演習を示している．
+
+演習問題の解答を，どれくらい入手しやすくすべきかを決めるのは難しい．本書で独学する読者には解答はとても役立つだろう．だが，本書を教科書とする講師にとっては，演習問題を講義で利用できるように，解答は出版社から取り寄せられるようにしておく方が良いであろう．こうした相反する要求に応じるようとするため，本文の重要な点を拡充するのに役立つ演習問題や，重要な細部を補足するような問題についてのみ，本書の Web サイトから解答を PDF ファイルで入手できるようにした．こうした演習問題は\fbox{www}で示した．他の演習問題の解答は，出版社に連絡すれば（詳細は Web ページを参照），講師には入手できるようにする．だが，読者には，すべて独力でこれらの演習問題を解き，必要なときにのみ解答を見るようにすることを強く薦める．
+
+本書は概念的・原理的な事柄を中心に執筆した．だが，できれば学生は適当なデータ集合を用いて，主なアルゴリズムのいくつかを実験してみるとよい．本書で示したほとんどのアルゴリズムを Matlab で実装したソフトウェアと，例題用データ集合はWeb サイトから入手できるようにする．また，これらは，機械学習に現れる最適化問題を解く実用的アルゴリズムについての姉妹書 (Bishop and Nabney, 2008) にも収録する予定である．
+
+\section*{謝辞}
+
+まず最初に，本書の図表や \LaTeX での組版の準備に多大な貢献をしてくれた Markus Svens\'{e}n に心からの感謝を示したい．彼の手助けは計りしれないものであった．
+
+また，非常に刺激的な研究環境を提供し，本書を執筆できるよう取りはからってくれた Microsoft Research 社に謝意を表す（しかし，本書の立場や意見は私自身のもので，したがってそれらは必ずしも Microsoft 社やその関係団体のそれと同じではない）．
+
+Springer 社は，本書の執筆の最終段階を通して，すばらしい援助をしてくれた．担当編集者 John Kimmel には，彼の支援とプロ精神に対して，Joseph Piliero には，本書の表紙と体裁への手助けに対して，MaryAnn Brickner には，制作段階での多大な貢献に対して感謝したい．表紙のデザインは，Antonio Criminisi との議論に触発されたものである．
+
+以前の教科書 Neural Networks for Pattern Recognition (Bishop, 1995) からの抜粋を許可してくれた Oxford University Press 社にも感謝したい．Mark 1 パーセプトロンとFrank Rosenblatt の画像は，Arvin Calspan Advanced Technology Center の許可を得て掲載した．図 13.1 のスペクトル図を描いてくれた Asela Gunawardana と，図 12.7 を描くためにカーネル PCA のコードを利用させてくれた Bernhard Sch\"{o}lkopf にも感謝したい．
+
+また，本書の予稿を閲読し，助言や提言をしてくれた次の方々のお名前を挙げておきたい．Shivani Agarwal, Cedric Archambeau, Arik Azran, Andrew Blake, Hakan Cevikalp, Michael Fourman, Brendan Frey, Zoubin Ghahramani, Thore Graepel, Katherine Heller, Ralf Herbrich, Geoffrey Hinton, Adam Johansen, Matthew Johnson, Michael Jordan,
+Eva Kalyvianaki, Anitha Kannan, Julia Lasserre, David Liu, Tom Minka, Ian Nabney,
+Tonatiuh Pena, Yuan Qi, Sam Roweis, Balaji Sanjiya, Toby Sharp, Ana Costa e Silva,
+David Spiegelhalter, Jay Stokes, Tara Symeonides, Martin Szummer, Marshall Tappen,
+Ilkay Ulusoy, Chris Williams, John Winn, Andrew Zisserman.
+
+最後に，本書の執筆に費やした数年間を通じて大きな支えとなってくれた妻 Jennaにお礼を述べたい．
+
+\vspace{13Q}
+
+2006 年 2 月ケンブリッジにて C.M. ビショップ
+
+\section*{数式の表記}
+
+本書では，数学的な内容は，この分野を正しく理解するのに必要最小限に留めた．だが，この最小限は0ではなく，最近のパターン認識や機械学習を明確に理解するには，微積分，線形代数，確率論を，十分に把握しておくことは必須である．だが，本書では，数学的な厳密さより，背後の概念を説明することを重視している．
+
+本書を通して一貫した表記を用いるように努めた．そのため，該当する研究分野で使われる一般的な表記とは，しばしば違ったものとなることもある．ベクトルは，$\bs{x}$ などの太字のローマン体小文字で記し，すべてのベクトルは列ベクトルと仮定する．上付きの $\top$ は，行列やベクトルの転置を表す．よって，$\bs{x}^{\top}$ は行ベクトルになる．$\bs{M}$ などの太字のローマン体大文字は行列を表す．$(w_{1},\ldots,w_{M})$ は $M$ 要素の行ベクトルであり，これに対応する列ベクトルは $\bs{w} = (w_{1},\ldots,w_{M})^{\top}$ と書く．
+
+$[a,b]$ の表記は，$a$ から $b$ への\tb{閉区間}，すなわち，$a$ と $b$ の値を含む区間を記すのに用いる．一方，$(a,b)$ は\tb{開区間}，すなわち，$a$ や $b$ は含まない区間を記す．同様に，$[a,b)$ は，$a$ は含むが $b$ は含まない区間を表す．しかし，ほとんどの場合，区間の端点を含むかどうかといった細部について，あまり考える必要はない．
+
+$M \times M$ の単位行列は $\bs{I}_{M}$ と記し，次元数が曖昧でなければ $\bs{I}$ と略記する．この行列の要素 $I_{ij}$ は，$i=j$ なら1で，$i \neq j$ なら0である．
+
+$y(x)$ を関数として，汎関数を $f[y]$ と記す．汎関数の概念については付録 D で述べる．$g(x) = O(f(x))$ は，$|f(x)/g(x)|$ が，$x \rightarrow \infty$ で有界であることを示す．例えば，$g(x) = 3x^{2} + 2$ なら，$g(x) = O(x^{2})$ である．
+
+関数 $f(x,y)$ の，確率変数 $x$ についての期待値を，$BE_{x}[f(x,y)]$ と記す．どの変数で期待値をとるのかが曖昧でないときは，添え字を省略して，$\BE[x]$ などと簡略化する．$x$ の分布が，別の変数 $z$ で条件付けされているなら，このときの条件付き期待値は $\BE_{x}[f(x)|z]$ と書く．同様に，分散は $\text{var}[f(x)]$ と記し，ベクトル変数に対する共分散は $\text{cov}[\bs{x},\bs{y}]$ と記す．また，$\text{cov}[\bs{x},\bs{x}]$ を短くした表記として $\text{cov}[\bs{x}]$ も用いる．期待値や共分散については，1.2.2 節で紹介する．
+
+$D$ 次元ベクトル $\bs{x} = (x_{1},\ldots,x_{D})^{\top}$ が，$\bs{x}_{1},\ldots,\bs{x}_{N}$ のように $N$ 個あるとき，これらの観測値を，第 $n$ 行が，行ベクトル $\bs{x}_{n}^{\top}$ となるようなデータ行列 $\bs{X}$ にまとめることがある．よって，$\bs{X}$ の $n,i$ 要素は，第 $n$ 観測値 $\bs{x}_{n}$ の，第 $i$ 要素に該当する．1次元変数の場合では，このような行列は $\bs{x}$ と記す．これは，第 $n$ 要素が $x_{n}$ であるような列ベクトルである．なお，(次元数が $D$ の) $\bs{x}$ と区別するため，(次元数が $N$ の) $\bs{x}$ には違った書体を用いる．
+
+\end{document}

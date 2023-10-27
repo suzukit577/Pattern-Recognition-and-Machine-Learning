@@ -1,0 +1,976 @@
+\documentclass[uplatex,a4paper,oneside,openany,dvipdfmx]{jsarticle}
+
+\title{パターン認識と機械学習\\第1章\ 序論}
+\author{鈴木拓己}
+\date{\today}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{color}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{caption}
+\usepackage[subrefformat=parens]{subcaption}
+\usepackage{overpic}
+\usepackage{mathtools}
+\usepackage{comment}
+\usepackage[margin=25mm]{geometry}
+\usepackage{enumerate}
+\usepackage{ascmac}
+\usepackage{framed}
+\usepackage{type1cm}
+\usepackage[dvipdfmx]{hyperref, graphicx, color}
+\usepackage{cite}
+\usepackage{tcolorbox}
+%\usepackage{natbib}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead[R]{\rightmark}
+\fancyhead[L]{\leftmark}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+% 数式番号の設定
+\numberwithin{equation}{section}
+% 参照する数式のみナンバリングする
+\mathtoolsset{showonlyrefs=false}
+
+% tikzの設定
+\usepackage{tikz}
+\usetikzlibrary{intersections, calc, arrows.meta}
+%\usetikzlibrary{cd}
+%\usepackage{tikz-cd}
+
+% 可換図式
+\usepackage[all]{xy}
+
+% ハイパーリンクの設定
+%\usepackage{xcolor}
+%\hypersetup{
+%    colorlinks=false,
+%    citebordercolor=green,
+%    linkbordercolor=red,
+%    urlbordercolor=cyan,
+%}
+
+\usepackage{pxjahyper}
+\hypersetup{
+	colorlinks=false,   %リンクに色をつけない設定
+	bookmarks=true,     %以下ブックマークに関する設定
+	bookmarksnumbered=true,
+	pdfborder={0 0 0},
+	bookmarkstype=toc
+}
+
+%\usepackage{xcolor}
+%\hypersetup{
+%    colorlinks=false,
+%    citebordercolor=green,
+%    linkbordercolor=red,
+%    urlbordercolor=cyan,
+%}
+
+\renewcommand{\thepart}{\arabic{section}}
+
+%\renewcommand{\labelenumi}{(\roman{enumi})}
+%\SetLabelAlign{Center}{\hfil#1\hfil}
+%\SetLabelAlign{CenterWithParen}{\hfil(\makebox[0.8em]{#1})\hfil}
+
+%\renewcommand{\proofname}{Proof}
+
+\makeatletter % use at mark
+\renewenvironment{proof}[1][\proofname]{\par
+  \pushQED{\qed}%
+  \normalfont \topsep6\p@\@plus6\p@\relax
+  \trivlist
+  \item[\hskip\labelsep
+        \itshape
+    %{\bf\underline{#1}}]\ignorespaces
+     {#1\@addpunct{.}}]\ignorespaces % ピリオドあり
+}{%
+  \popQED\endtrivlist\@endpefalse
+}
+\makeatother % end at mark
+
+\newtheoremstyle{mystyle}%   % スタイル名
+    {}%                      % 上部スペース
+    {}%                      % 下部スペース
+    {\normalfont}%           % 本文フォント
+    {}%                      % インデント量
+    {\rm}%                   % 見出しフォント
+    {}%                      % 見出し後の句読点, '.'
+    { }%                     % 見出し後のスペース, ' ' or \newline
+    {\thmname{#1}\thmnumber{#2}\thmnote{\ (#3)\ }}%
+                             % 見出しの書式 (can be left empty, meaning `normal')
+\theoremstyle{mystyle} % スタイルの適用
+
+% 数式の定義環境
+\captionsetup{compatibility=false}
+\newtheorem{definition}{Definition\ }[section]
+\newtheorem{theorem}{Theorem\ }[section]
+\newtheorem{proposition}{Proposition\ }[section]
+\newtheorem{lemma}{Lemma\ }[section]
+\newtheorem{corollary}{Corollary\ }[section]
+\newtheorem{remark}{Remark\ }[section]
+\newtheorem{example}{Example\ }[section]
+\newtheorem{claim}{Claim\ }[section]
+\newtheorem{axiom}{Axiom\ }[section]
+\def\co{\colon\thinspace}
+
+\tcbuselibrary{theorems,breakable} %% を読み込む
+%%%%% 下記をプリアンブルに
+\definecolor{burgundy}{rgb}{0.5, 0.0, 0.13}
+\newtcbtheorem[number within=section]{thm}{Theorem.}%
+{fonttitle=\gtfamily\sffamily\bfseries\upshape,
+colframe=burgundy,colback=burgundy!2!white,
+rightrule=0pt,leftrule=0pt,bottomrule=2pt,
+colbacktitle=burgundy,theorem style=standard,breakable,arc=0pt}{tha}
+%%%%% 上記をプリアンブルに
+
+% コマンドの設定
+%% ボールド体
+\newcommand{\BC}{\mathbb{C}}
+\newcommand{\BE}{\mathbb{E}}
+\newcommand{\BK}{\mathbb{K}}
+\newcommand{\BL}{\mathbb{L}}
+\newcommand{\BN}{\mathbb{N}}
+\newcommand{\BP}{\mathbb{P}}
+\newcommand{\BQ}{\mathbb{Q}}
+\newcommand{\BR}{\mathbb{R}}
+\newcommand{\BV}{\mathbb{V}}
+\newcommand{\BZ}{\mathbb{Z}}
+%% スクリプト体
+\newcommand{\CA}{\mathcal{A}}
+\newcommand{\CB}{\mathcal{B}}
+\newcommand{\CC}{\mathcal{C}}
+\newcommand{\CD}{\mathcal{D}}
+\newcommand{\CE}{\mathcal{E}}
+\newcommand{\CF}{\mathcal{F}}
+\newcommand{\CG}{\mathcal{G}}
+\newcommand{\CH}{\mathcal{H}}
+\newcommand{\CI}{\mathcal{I}}
+\newcommand{\CJ}{\mathcal{J}}
+\newcommand{\CK}{\mathcal{K}}
+\newcommand{\CL}{\mathcal{L}}
+\newcommand{\CM}{\mathcal{M}}
+\newcommand{\CN}{\mathcal{N}}
+\newcommand{\CO}{\mathcal{O}}
+\newcommand{\CP}{\mathcal{P}}
+\newcommand{\CQ}{\mathcal{Q}}
+\newcommand{\CR}{\mathcal{R}}
+\newcommand{\CS}{\mathcal{S}}
+\newcommand{\CT}{\mathcal{T}}
+\newcommand{\CU}{\mathcal{U}}
+\newcommand{\CV}{\mathcal{V}}
+\newcommand{\CW}{\mathcal{W}}
+\newcommand{\CX}{\mathcal{X}}
+\newcommand{\CY}{\mathcal{Y}}
+\newcommand{\CZ}{\mathcal{Z}}
+%% 花文字
+\newcommand{\SE}{\mathscr{E}}
+\newcommand{\SM}{\mathscr{M}}
+%% ドイツ文字
+\newcommand{\mf}[1]{\mathfrak{S}}
+%% 花文字
+\newcommand{\scr}[1]{\mathscr{#1}}
+%% 数式モード中のローマン体
+\newcommand{\mr}[1]{\mathrm{#1}}
+%% 数式モード中のボールド体
+\newcommand{\mb}[1]{\mathbf{#1}}
+%% 数式モード中のテキスト
+\newcommand{\trm}[1]{\textrm{#1}}
+%% ボールド体
+\newcommand{\tb}[1]{\textbf{#1}}
+%% 内積とか
+\newcommand{\ip}[1]{\left \langle #1 \right \rangle}
+%% 微分演算子(ライプニッツの記法)
+\newcommand{\diff}[2]{\frac{d}{d#1} {#2}}
+%% ボールドシンボル
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+%\newcommand{\1}{\bs{1}}
+%\newcommand{\0}{\bs{0}}
+%% イタリック体
+\newcommand{\ti}[1]{\textit{#1}}
+%% 偏微分の記号
+\newcommand{\pd}[1]{\partial#1}
+%% 一般線形群
+\newcommand{\GL}[2]{GL_{#1}{#2}}
+%% such that
+\newcommand{\st}{\mathrm{\ s.t.\ }}
+%% 恒等写像
+\newcommand{\id}[1]{\mathrm{id}_{#1}}
+%% ノルム
+\newcommand{\norm}[1]{\|#1\|}
+%\newcommand{\H}{\mathop{\mathrm{H}}\nolimits}
+%% パーシステントホモロジー
+\newcommand{\PH}{\mathop{PH}\nolimits}
+%% 圏
+\newcommand{\catname}[1]{\mathbf{#1}}
+\newcommand{\dualcatname}[1]{\mathbf{#1}^{\textrm{op}}}
+\newcommand{\ob}{\mathrm{Ob}}
+\newcommand{\uni}{\mathfrak{U}}
+%% 関数の台
+\newcommand{\supp}[1]{\mathrm{supp}(#1)}
+%\newcommand{\Hom}{\mathrm{Hom}}
+%% 随伴
+\newcommand{\ad}[1]{\mathrm{ad}(#1)}
+%% 共分散
+\newcommand{\cov}[1]{\mathrm{Cov}[#1]}
+
+% argmin,argmaxのコマンド
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+% 線形代数のコマンド
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\Det}{Det}
+\DeclareMathOperator{\Log}{Log}
+\DeclareMathOperator{\rank}{rank}
+%\DeclareMathOperator{\rk}{rk}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\corank}{corank}
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\coker}{coker}
+\DeclareMathOperator{\Coker}{Coker}
+
+% 圏論のコマンド
+\DeclareMathOperator{\Hom}{Hom}
+
+\allowdisplaybreaks[1]
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+\setcounter{tocdepth}{3}
+
+\tableofcontents
+
+\begin{abstract}
+    本章では，種々の機械学習アルゴリズムの柱になる基本的な概念のうち，最も重要なもののいくつかを導入し，簡単な例を用いて説明する．また，本章の後半では，実世界のパターン認識に適用できる，より洗練されたモデルを提示する．さらに，本書全体で必要な3つの重要なツールである，確率論・決定理論・情報理論についての導入を行う．
+\end{abstract}
+
+\section*{Notation}
+
+基本的な記法は前書きで書かれているものに合わせているが，一部異なる記法を用いる場合がある．
+
+\section{序論}
+
+\subsection{例：多項式フィッティング} \label{subsec:poly_fitting}
+
+まず最初に単純な回帰問題から始める．実数値の入力変数 $x \in \BR$ を観測し，それを用いて実数値の目標変数 $t \in \BR$ を予測したいとする．
+
+訓練集合として，$N$ 個の観測値 $x$ を並べた $\mb{x} = (x_{1},\ldots,x_{N})^{\top}$ と，それぞれに対応する観測値 $t$ を並べた $\mb{t} = (t_{1},\ldots,t_{N})^{\top}$ が与えられたとする．このとき，目標は，訓練集合を利用して，新たな入力変数 $\hat{x}$ に対して目標変数 $\hat{t}$ を予測することである．これは，観測データの背後にある関数 $y(x)$ を暗に見つけようとするのとほぼ等価であるが，有限個のデータ集合から汎化しなければならない点で，本質的に難しい問題である．さらに，観測データはノイズが乗っており，与えられた $\hat{x}$ に対する $\hat{t}$ の値には不確実性 (uncertainty) がある．\ref{subsec:prob_theory} 節で議論する確率論はそのような不確実性を厳密かつ定量的に表現する枠組みを与える．また，\ref{subsec:decision_theory} 節で議論する決定理論は，確率論的な枠組みを利用して，適切な規準の下で最適な予測をすることを可能にする．
+
+ここでは，話を先に進めるために，曲線フィッティング (曲線あてはめ：curve fitting) に基づく単純なアプローチを考える．ここでは特に，以下のような多項式を使ってデータへのフィッティングを行うことにする．
+\begin{equation} \label{eq:1.1}
+    y(x,\bs{w}) = w_{0} + w_{1}x + w_{2}x^{2} + \cdots + w_{M}x^{M} = \sum_{j=0}^{M} w_{j}x^{j}.
+\end{equation}
+ただし，$M$ は多項式の\tb{次数} (order) で，$x^{j}$ は $x$ の $j$ 乗を表す．多項式の係数 $w_{0},\ldots,w_{M}$ をまとめて $\bs{w}$ と書く．多項式 $y(x,\bs{x})$ は $x$ の非線形関数であるが，係数 $\bs{w}$ の線形関数であることに注意する．多項式のように，未知のパラメータに関して線形であるような関数は非常に重要な性質を持ち，\tb{線形モデル} (linear model) と呼ばれ，3章と4章で詳細に議論する．
+
+訓練データに多項式をあてはめることで係数の値を求めてみよう．これは，$\bs{w}$ を任意に固定したときの関数 $y(x,\bs{w})$ の値と訓練集合のデータ点との間のずれを測る\tb{誤差関数} (error function) の最小化で達成できる．誤差関数の選び方として，単純で広く用いられているものは，各データ点 $x_{n}$ における予測値 $y(x_{n},\bs{w})$ と対応する目標値 $t_{n}$ との二乗和誤差 (sum-of-squares error) である．式で書けば，
+\begin{equation} \label{eq:1.2}
+    E(\bs{w}) = \frac{1}{2} \sum_{n=1}^{N} \{y(x_{n},\bs{w}) - t_{n}\}^{2}
+\end{equation}
+となり，これを最小化することになる．後で見るように，二乗和誤差関数の最大化は，観測データ $x_{n}$ のノイズがガウス分布に従うと仮定した下での尤度関数の最大化と等価になる．ここでは単に，二乗和誤差関数は非負であり，その値が0になることと $y(x,\bs{w})$ が全訓練データ点を通ることは同値であることに注意すればよい．
+
+このように，$E(\bs{w})$ をできるだけ小さくするような $\bs{w}$ を選ぶことで曲線フィッティング問題を解くことができる．誤差関数は係数 $\bs{w}$ の2次関数であるため，その係数に関する微分は $\bs{w}$ の要素に関して線形になり，通常，誤差関数を最小にする一意的な解を持つ．その解 $\bs{w}^{\ast}$ は閉形式で求まり (\tb{演習 1.1})，結果として得られる多項式は $y(x,\bs{w}^{\ast})$ となる．
+
+あとは，多項式の次数 $M$ を選ぶ問題が残っているが，この問題は\tb{モデル比較} (model conparison) あるいは\tb{モデル選択} (model selection) と呼ぶ重要な概念の一例とみなすことができる．
+
+我々の目標は，新たなデータに対して正確な予測を行える高い汎化性能を達成することにある．汎化性能が $M$ にどう依存するかを定量的に評価するために，訓練集合の一部から用意したテスト集合を用いれば，選んだ $M$ の各値について，訓練データに対して \eqref{eq:1.2} で与えられる $E(\bs{w}^{\ast})$ の残差が計算できるが，テスト集合についても $E(\bs{w}^{\ast})$ が評価できる．このとき，
+\begin{equation} \label{eq:1.3}
+    E_{\mr{RMS}} = \sqrt{2E(\bs{w}^{\ast})/N}
+\end{equation}
+で定義される平均二乗平方根誤差 (root-mean-square error, RMS error) を用いると便利なことがある．$N$ で割ることによってサイズの異なるデータ集合を比較することができるようになり，平方根をとることによって，$E_{\mr{RMS}}$ は目的変数 $t$ と同じ尺度 (単位) であることが保証される．いろいろな $M$ に対する訓練集合とテスト集合の RMS 誤差を測ることにより，妥当な $M$ の値を評価することができる．
+
+ある次数の多項式がそれより低い次数のすべての多項式を含むことを考えると，$M$ の値は大きければ大きいほど良い結果が得られるように思えるが，一般に $M$ の値が大きすぎるとデータを生成する関数に対する曲線のあてはまりが悪くなり，このような振る舞いは\tb{過学習} (over-fitting) として知られている．これは，直観的には，$M$ が大きく自由度の高い多項式モデルは目的値のランダムノイズに引きずられてしまうと解釈すればよい．
+
+次に，モデルの次数は固定し，データ集合のサイズを変えてみたときの振る舞いを考える．一般に，モデルの複雑さを固定したとき，データ集合のサイズが大きくなるにつれて過学習の問題は深刻でなくなる．別の言い方をすると，データ集合を大きくすればするほど，より複雑で柔軟なモデルをデータにあてはめられるようになる．大雑把な経験則としては，データ点の数はモデル中の適応パラメータの数の何倍か (例えば5とか10) より小さくてはいけない，と言われている．しかしながら，3章で見るように，必ずしもパラメータの数がモデルの複雑さを測る最適な尺度というわけではない．
+
+また，入手できる訓練集合のサイズに応じてモデルのパラメータの数を制限しなければならないのは納得できない感じがする．モデルの複雑さはむしろ解くべき問題の複雑さに応じて選ぶのがもっともであるように思える．最小二乗でモデルのパラメータを求めるアプローチが\tb{最尤推定} (maximum likelihood) (\ref{subsubsec:revisitting_curve_fitting} 節で議論する) の特別な場合に相当し，過学習の問題が最尤推定の持つ一般的性質として理解できることを後で示す．
+
+過学習の問題を避けるには，\tb{ベイズ的} (Bayesian) アプローチ (3.4 節) を採用すればよい．ベイズの観点からはモデルのパラメータ数がデータ点の数をはるかに超えても問題がないことが後にわかる．実際，ベイズモデルにおいては\tb{有効パラメータ数} (effective number of parameters) は自動的にデータ集合のサイズに適合する．
+
+ここでは，これまで説明したアプローチに沿って，実際にどうやって複雑で柔軟なモデルを限られたサイズのデータ集合に対して使うことができるかをもう少し考える．過学習の現象を制御するためによく使われるテクニックに\tb{正則化} (regularization) がある．これは，誤差関数 \eqref{eq:1.2} に罰則項 (penalty term) を付加することにより，係数が大きな値になることを防ごうとするものである．そのような罰則項のうち最も単純なものは，係数の L2-ノルムをとったもので，誤差関数は
+\begin{equation} \label{eq:1.4}
+    \widetilde{E}(\bs{w}) = \frac{1}{2} \sum_{n=1}^{N} \{y(x_{n},\bs{w}) - t_{n}\}^{2} + \frac{\lambda}{2} \norm{\bs{w}}_{2}^{2}
+\end{equation}
+で与えられる．ここで，$\norm{\bs{w}}_{2}^{2} = \bs{w}^{\top} \bs{w} = w_{0}^{2} + w_{1}^{2} + \cdots + w_{M}^{2}$ であり，係数 $\lambda$ は正則化項と二乗誤差の和の項との相対的な重要度を調節している．ただし，係数 $w_{0}$ は正則化から外すことも多い．というのは，$w_{0}$ は目的変数の原点の選び方に依存しているためであり，正則化に入れるとしてもそれ専用の正則化係数を掛けたりする (詳細な議論については 5.5.1 節で扱う)．この場合も誤差関数 \eqref{eq:1.4} を最小にする解は閉形式で求めることができる (\tb{演習 1.2})．このようなテクニックは，係数の値を小さくするという意味で，統計学の分野で\tb{縮小推定} (shrinkage) と呼ばれている．特に，2次の正則化の場合は\tb{リッジ回帰} (ridge regression) と呼ばれ，ニューラルネットワークの文脈では\tb{荷重減衰} (weighted decay) として知られている．
+
+正則化項が汎化誤差に与える影響は，訓練集合とテスト集合の両方に対する RMS 誤差 \eqref{eq:1.3} の値を $\ln \lambda$ に対してプロットしてみればよい．これを見ることで，$\lambda$ がモデルの実質的な複雑さを制御し，過学習の度合いを決定していることがわかる．
+
+モデルの複雑さの問題は重要で，\ref{subsec:model_selection} で詳しく議論する．ここでは単に，誤差関数を最小にするようなアプローチで実際の応用問題を解こうとする際には，モデルの複雑さを適切に決める方法を見つけなければならないということに注意する．上記の議論から，得られたデータを，係数 $\bs{w}$ を決めるために使われる訓練集合と，それとは別の\tb{検証用集合} (validation set) に分けるという単純な方法が思いつく．検証用集合は\tb{ホールドアウト集合} (hold-out set) とも呼ばれ，モデルの複雑さ ($M$ または $\lambda$) を最適化するのに使われる．ただし，この方法では貴重な訓練データを無駄にすることになることが多いので，より洗練されたアプローチを探す必要がある (\ref{subsec:model_selection} 節)．
+
+ここまでは，直観に依拠した多項式曲線フィッティングの議論を扱ってきたが，ここからは，確率論的な議論の枠組みを用いて，パターン認識における問題を解くためのより原理的なアプローチを扱う．
+
+\subsection{確率論} \label{subsec:prob_theory}
+
+パターン認識の分野の鍵となる概念は不確実性である．これは計測ノイズやデータ集合のサイズが有限であることによって起きる．確率論 (probability theory) は不確実性に関する定量化と操作に関して一貫した枠組みを与え，パターン認識の基礎の中心をになっている．また，\ref{subsec:decision_theory} 節で議論する決定理論と組み合わせることにより，与えられた情報が不完全で曖昧なものであっても，そのすべての情報の下で最適な予測をすることが可能となる．
+
+始めに，ある事象の確率を，その事象が起きた回数と全試行回数の比で定義する．ただし，全試行回数が無限に多くなったときの極限を考える．パターン認識問題に関連した確率の重要な法則は\tb{確率の加法定理} (sum rule of probability) と\tb{確率の乗法定理} (product rule of probability) である．これらの法則を導出するため，2つの離散型確率変数 $X,Y$ を考える．ただし，$X$ の標本空間を $\CX = \{x_{i} \in \BR \mid i = 1,\ldots,M\}$ とし，$Y$ の標本空間を $\CY = \{y_{j} \in \BR \mid j = 1,\ldots,L\}$ とする．$X$ と $Y$ の両方についてサンプルをとり，合計 $N$ 回の試行を行う．そのうち，$(X,Y) = (x_{i},y_{j})$ となる試行の数を $n_{ij}$ とする．また，$X = x_{i}$ となる試行の数を $c_{i}$ とし，$Y = y_{j}$ となる試行の数を $r_{j}$ とする．$(X,Y) = (x_{i},y_{j})$ となる確率を $p(X=x_{i},Y=y_{j})$ と書き，$(X,Y) = (x_{i},y_{j})$ の\tb{同時確率} (joint probability) と呼ぶ．これは，
+\begin{equation}  \label{eq:1.5}
+    p(X=x_{i},Y=y_{j}) = \frac{n_{ij}}{N}
+\end{equation}
+で与えられる．ここで，暗に $N \rightarrow \infty$ という極限を考えている．同様に，$X=x_{i}$ となる確率を $p(X=x_{i})$ と書き，
+\begin{equation} \label{eq:1.6}
+    p(X=x_{i}) = \frac{c_{i}}{N}
+\end{equation}
+で与えられる．いま，$c_{i} = \sum_{j} n_{ij}$ であるから，\eqref{eq:1.5} と \eqref{eq:1.6} より
+\begin{equation} \label{eq:1.7}
+    p(X=x_{i}) = \sum_{j=1}^{L} p(X=x_{i},Y=y_{j})
+\end{equation}
+が成り立ち，これが確率の\tb{加法定理} (sum rule) である．$p(X=x_{i})$ は他の変数 (ここでは $Y$) についての周辺化であるから，\tb{周辺確率} (marginal probability) と呼ぶ．
+
+$X=x_{i}$ が与えられたときの $Y=y_{j}$ の事象の比率を $p(Y=y_{j} \mid X=x_{i})$ と書き，$X=x_{i}$ が与えられた下での $Y=y_{j}$ の\tb{条件付き確率} (conditional probability) と呼ぶ．この定義より，
+\begin{equation} \label{eq:1.8}
+    p(Y=y_{j} \mid X=x_{i}) = \frac{n_{ij}}{c_{i}}
+\end{equation}
+となる．ここで，\eqref{eq:1.5}，\eqref{eq:1.6} および \eqref{eq:1.8} から
+\begin{equation}
+    p(X=x_{i},Y=y_{j}) = \frac{n_{ij}}{N} = \frac{n_{ij}}{c_{i}} \cdot \frac{c_{i}}{N} = p(Y=y_{j} \mid X=x_{i}) p(X=x_{i})
+\end{equation}
+が成り立つ．これは確率の\tb{乗法定理} (product rule) である．以下，文脈上明らかなときは確率変数 $X$ 上の確率分布を単に $p(X)$ と書き，$X=x_{i}$ をとる確率を $p(x_{i})$ と書く．この記法を用いると，確率論の2つの基本法則を以下のように書くことができる．
+\begin{align}
+    &\textbf{(加法定理)} \qquad p(X) = \sum_{Y} p(X,Y),\label{eq:1.10}\\
+    &\textbf{(乗法定理)} \qquad p(X,Y) = p(Y \mid X) p(X).\label{eq:1.11}
+\end{align}
+特に，乗法定理および対称性 $p(X,Y) = p(Y,X)$ から，
+\begin{equation} \label{eq:1.12}
+    p(Y \mid X) = \frac{p(X \mid Y)p(Y)}{p(X)}
+\end{equation}
+を得る．これは\tb{ベイズの定理} (Bayes' theorem) と呼ばれ，パターン認識や機械学習において中心的な役割を果たす．また，加法定理を用いれば，ベイズの定理の分母は分子に現れる量を用いて
+\begin{equation}
+    p(X) = \sum_{Y} p(X \mid Y)p(Y)
+\end{equation}
+と表すことができる．これにより，ベイズの定理の分母は，\eqref{eq:1.12} 式の左辺の条件付き確率を $Y$ について和をとったものが1になることを保証するための規格化 (正規化) 定数とみなすことができる．ベイズの定理における $p(Y)$ を $Y$ の\tb{事前確率} (prior probability)，$p(Y \mid X)$ を $X$ が与えられた下での $Y$ の\tb{事後確率} (posterior probability) と呼ぶ．
+
+2つの確率変数の同時分布が $p(X,Y) = p(X)p(Y)$ と周辺確率の積に分解できるとき，$X$ と $Y$ は\tb{独立} (independent) であるという．確率変数 $X,Y$ が独立であるとき，乗法定理から $p(Y \mid X) = p(Y)$ を得るので，$X$ が与えられた下での $Y$ の条件付き確率は $X$ の値に独立になる．
+
+\subsubsection{確率密度}
+
+連続的な事象集合に対する確率を考える．実数値をとる変数 $x \in \BR$ が区間 $(x,x + \delta x)$ に入る確率が，$\delta x \rightarrow 0$ のとき $p(x) \delta x$ で与えられるとき，$p(x)$ を $x$ 上の\tb{確率密度} (probability density) と呼ぶ．このとき，$x$ が区間 $(a,b)$ にある確率は
+\begin{equation} \label{eq:1.24}
+    p(x \in (a,b)) = \int_{a}^{b} p(x) dx
+\end{equation}
+で与えられる．確率は非負で $x$ は実数値上のどこかの値をとらなければならないため，確率密度は
+\begin{gather}
+    p(x) \ge 0,\\
+    \int_{-\infty}^{\infty} p(x) dx = 1
+\end{gather}
+を満たす必要がある．変数に非線形な変換を施すと，確率密度はヤコビ行列により単純な関数とは異なる仕方で変換される．例えば，変数変換 $x=g(y)$ を考えると，関数 $f(x)$ は $\widetilde{f}(y)=f(g(y))$ となる．ここで，確率密度 $p_{x}(x)$ に対応する，新たな変数 $y$ に関する密度 $p_{y}(y)$ を考える．ただし，ここでは添え字によって異なる密度 $p_{x}(x),p_{y}(y)$ を表す．$g$ に連続性を仮定すれば，区間 $(x,x + \delta x)$ に入る観測値は $\delta x$ が十分小さければ区間 $(y,y + \delta y)$ に入り，$p_{x}(x) \delta x \simeq p_{y}(y) \delta y$ となるので，
+\begin{equation} \label{eq:1.27}
+    p_{y}(y) = p_{x}(x) \left|\frac{dx}{dy}\right| = p_{x}(g(y))|g'(y)|
+\end{equation}
+となる．この性質から，確率密度の最大値は変数の選び方に依存するということがわかる (\tb{演習 1.4})．
+
+$x$ が区間 $(-\infty,x)$ に入る確率は\tb{累積分布関数} (cumulative distribution function)
+\begin{equation} \label{eq:1.28}
+    P(x) = \int_{-\infty}^{x} p(x) dx
+\end{equation}
+で定義され，微分積分学の基本定理より $P'(x) = p(x)$ を満たす．
+
+いくつかの連続変数 $x_{1},\ldots,x_{D}$ があるとき，これをまとめてベクトル $\bs{x}$ で表すと，同時分布 $p(\bs{x}) = p(x_{1},\ldots,x_{D})$ を定義することができ，$\bs{x}$ が $\bs{x}$ を含む無限小の体積要素 $\delta \bs{x}$ に入る確率は $p(\bs{x})\delta\bs{x}$ で与えられる．この多変数確率密度は
+\begin{gather}
+    p(\bs{x}) \ge 0,\\
+    \int p(\bs{x}) d\bs{x} = \int_{\CX_{D}} \cdots \int_{\CX_{1}} p(x_{1},\ldots,x_{D}) dx_{1} \cdots dx_{D} =  1
+\end{gather}
+を満たす必要がある．ここで，第2式の積分は $\bs{x}$ の定義域全体にわたってとる．離散変数と連続変数が組み合わせになっている場合も同時確率分布を考えることができる．$x$ が離散変数の場合には，$p(x)$ を\tb{確率質量関数} (probability mass function) と呼ぶ．
+
+確率の加法・乗法定理およびベイズの定理は確率密度や離散変数と連続変数の組み合わせに対しても同様に適用可能であり，$x,y$ を2つの実変数として，その形は
+\begin{gather}
+    p(x) = \int p(x,y) dy, \label{eq:1.31} \\
+    p(x,y) = p(y \mid x) p(x) \label{eq:1.32}
+\end{gather}
+をとる．連続変数の加法・乗法定理を厳密に示すには測度論が必要となるが，ここでは測度論的確率論は扱わない．しかし，厳密でない言い方をすれば，各連続変数を幅 $\Delta$ の区間に分けて，その上の離散確率分布を考えることにより理解できる．$\Delta \rightarrow 0$ という極限をとると，和は積分になり所望の結果が得られる．
+
+\subsubsection{期待値と分散}
+
+確率を含む最も重要な操作の1つは関数の重み付きの平均を求めることである．ある関数 $f(x)$ の，確率分布 $p(x)$ の下での平均値を $f(x)$ の\tb{期待値} (expectation) と呼び,$\BE[f]$ と書く．離散分布に対しては，
+\begin{equation} \label{eq:1.33}
+    \BE[f] = \sum_{x} p(x) f(x)
+\end{equation}
+で与えられ，連続変数の場合は対応する確率密度を用いて
+\begin{equation} \label{eq:1.34}
+    \BE[f] = \int p(x) f(x) dx 
+\end{equation}
+で与えられる．どちらの場合も，確率分布や確率密度から得られた有限個の $N$ 点を用いて，期待値はこれらの点の有限和によって
+\begin{equation} \label{eq:1.35}
+    \BE[f] \simeq \frac{1}{N} \sum_{n=1}^{N} f(x_{n})
+\end{equation}
+で近似される．この結果は，11章でサンプリング法について議論する際に頻繁に用いることになる．\eqref{eq:1.35} の近似は $N \rightarrow \infty$ の極限で厳密になる．
+
+多変数関数の期待値を考える際には，どの変数について平均をとるかを示すのに添字を用いる．例えば，
+\begin{equation} \label{eq:1.36}
+    \BE_{x}[f(x,y)]
+\end{equation}
+は関数 $f(x,y)$ の $x$ の分布に関する平均を表す．このとき，$\BE_{x}[f(x,y)]$ は $y$ の関数で表される確率変数である．
+
+条件付き分布についても\tb{条件付き期待値} (conditional expectation) を考えることができ，
+\begin{equation} \label{eq:1.37}
+    \BE_{x}[f \mid y] = \sum_{x} p(x \mid y) f(x)
+\end{equation}
+となり，連続変数に対しても同様に定義される．$f(x)$ の\tb{分散} (variance) は
+\begin{equation} \label{eq:1.38}
+    \BV[f] = \BE\left[(f(x) - \BE[f(x)])^{2}\right]
+\end{equation}
+で定義され，$f(x)$ がその平均値 $\BE[f(x)]$ の周りでどの程度ばらつくかの尺度となる．期待値の中身の2乗を展開すると，期待値の線形性から，分散は $f(x)$ と $f(x)^{2}$ の期待値を用いて
+\begin{equation} \label{eq:1.39}
+    \BV[f] = \BE\left[(f(x) - \BE[f(x)])^{2}\right] = \BE\left[f(x)^{2} - 2 f(x) \BE[f(x)] + \BE[f(x)]^{2}\right] = \BE[f(x)^{2}] - \BE[f(x)]^{2}
+\end{equation}
+と書くこともできる (\tb{演習 1.5})．特に，確率変数 $x$ 自身の分散を考えることができ，
+\begin{equation} \label{eq:1.40}
+    \BV[x] = \BE[x^{2}] - \BE[x]^{2}
+\end{equation}
+となる．2つの確率変数 $x$ と $y$ の\tb{共分散} (covariance) は
+\begin{align} \label{eq:1.41}
+    \begin{aligned}
+        \cov{x,y} &= \BE_{x,y}[(x - \BE[x])(y - \BE[y])] = \BE_{x,y}[xy - x\BE[y] -y\BE[x] + \BE[x]\BE[y]] \\
+        &= \BE_{x,y}[xy] - \BE[x]\BE[y]
+    \end{aligned}
+\end{align}
+と定義され，$x$ と $y$ が同時に変動する度合いを表している．$x$ と $y$ が独立ならば共分散は0になる (\tb{演習 1.6})．
+
+2つの確率変数ベクトル $\bs{x},\bs{y}$ に関して，共分散は行列
+\begin{align} \label{eq:1.42}
+    \begin{aligned}
+        \cov{\bs{x},\bs{y}} &= \BE_{\bs{x},\bs{y}}[(\bs{x} - \BE[\bs{x}])(\bs{y}^{\top} - \BE[\bs{y}^{\top}])] = \BE_{\bs{x},\bs{y}}[\bs{x}\bs{y}^{\top}] - \BE[\bs{x}]\BE[\bs{y}^{\top}] \\
+        &= \BE_{\bs{x},\bs{y}}\left[\begin{pmatrix}
+        x_{1} - \BE[x_{1}] \\
+        \vdots \\
+        x_{N} - \BE[x_{N}]
+        \end{pmatrix}\begin{pmatrix}
+            y_{1} - \BE[y_{1}] & \cdots & y_{N} - \BE[y_{N}]
+        \end{pmatrix}\right] \\
+        &= \BE_{\bs{x},\bs{y}}\left[\begin{pmatrix}
+            (x_{1} - \BE[x_{1}])(y_{1} - \BE[y_{N}]) & \cdots & (x_{1} - \BE[x_{1}])(y_{N} - \BE[y_{N}]) \\
+            \vdots &  & \vdots \\
+            (x_{N} - \BE[x_{N}])(y_{1} - \BE[y_{N}]) & \cdots & (x_{N} - \BE[x_{N}])(y_{N} - \BE[y_{N}])
+        \end{pmatrix}\right]
+    \end{aligned}
+\end{align}
+となる．ベクトル $\bs{x}$ の成分間の共分散を表すのには，より単純に $\cov{\bs{x}} \coloneqq \cov{\bs{x},\bs{x}}$ と書く．
+
+\subsubsection{ベイズ確率}
+
+本章ではここまで確率をランダムな繰り返し試行の頻度とみなしてきた．これを\tb{古典的確率} (classical probability) あるいは\tb{頻度主義的} (frequentist) な確率解釈と呼ぶ．ここではより一般的な\tb{ベイズ的} (Bayesian) な見方を導入する．そこでは，確率は不確実性の度合いを考える．
+
+不確かな事象，例えば月がかつて太陽を回る軌道上にあったかどうかとか，北極の氷が今世紀末には消えるかどうかといったことを考える．これらの事象は確立の概念を定義するために果物の箱を使って行ったような，たくさんの繰り返し観測ができる事象ではない．しかしながら，一般にどれぐらい速く極地の氷が溶けるかといったことに関して我々は何らかの知見を持っている．今，何か新たな証拠，例えば地球観測衛星が集めた新たな形の診断情報が得られれば，氷を失う速さに関する意見を修正するかもしれない．こうした問題に対する評価は，どれくらいまで温室ガスの放出を減らす努力をすべきかなど，とるべき行動に影響を与える．したがって，そのような状況に対しては，不確実性を定量的に表現し，新たな証拠に照らしてそれを正しく修正し，その結果として最適な行動や決定を下したくなる．これらはすべて，エレガントで非常に一般的なベイズ的な確率の解釈によって実現できる．
+
+不確実性を表現するのに確率を使うことは場当たり的なものではなく，合理的で一貫した推論を行う際の常識というものを考えれば，必然的なものであることがわかる．例えば，Cox (1946) は，信念の度合いを数値で表そうとする際，信念に関する常識の性質を公理の単純な集合で表すと，信念の度合いを操作する法則の集合が一意的に導かれ，それが確率の加法・乗法定理と等価であることを示した．これは，確率論がブール論理を不確実性を含む場合に拡張したものとみなせることの，最初の厳密な証明である (Jaynes, 2003)．他にも多くの研究者が，不確実性の尺度が満たすべき性質や公理を様々に提案している (Ramsey, 1931; Good, 1950; Savage, 1961; deFinetti, 1970; Lindley, 1982)．いずれの場合も結果的に得られる数値的な量は厳密に確率の加法・乗法定理に従う．従って，これらの量を (ベイズ) 確率とみなすのは自然である．
+
+パターン認識の分野でも，確率のより一般的な概念を導入することが有用である．\ref{subsec:poly_fitting} 節の多項式曲線フィッティングの例を考えよう．観測される変数 $t_{n}$ にのるノイズに頻度主義的な確率の概念をあてはめることは妥当であろう．しかしながら，我々はモデルパラメータ $\bs{w}$ の適切な選び方に関する不確実性を取り扱い，そして定量化したい．ベイズ的な観点を採用すれば，$\bs{w}$ といったモデルパラメータのほか，モデルそのものの選択に関する不確実性を表すのに確率論の道具が使えることを見ていこう．
+
+ここでベイズの定理が新たな重要性を獲得することを見る．果物の箱の例を思い出してみると，果物の種類を観測することが，選ばれた箱が赤である確率を変える本質的な情報になっていた．この例ではベイズの定理により，観測されたデータで与えられた証拠を取り込むことで，事前確率を事後確率に変換できた．後で詳しくみるように，同様のアプローチは多項式曲線フィッティングの例において $\bs{w}$ などのパラメータに関する推論にも採用できる．データを観測する前にあらかじめ $\bs{w}$ に関する我々の仮説を事前確率分布 $p(\bs{w})$ の形で取り込んでおく．観測データ $\CD = \{t_{1},\ldots,t_{N}\}$ の効果は，後で \ref{subsubsec:revisitting_curve_fitting} 節で見るように，$p(\CD \mid \bs{w})$ という条件付き確率で陽に表現される．ベイズの定理は
+\begin{equation} \label{eq:1.43}
+    p(\bs{w} \mid \CD) = \frac{p(\CD \mid \bs{w}) p(\bs{w})}{p(\CD)}
+\end{equation}
+という形をとり，$\CD$ を観測した\tb{事後}に $\bs{w}$ に関する不確実性を事後分布 $p(\bs{w} \mid \CD)$ の形で評価することを可能にする．
+
+ベイズの定理の右辺にある $p(\CD \mid \bs{w})$ という量はデータ集合 $\CD$ に対する評価であって，パラメータベクトル $\bs{w}$ の関数とみなせる．これを\tb{尤度関数} (likelihood function) と呼ぶ．これは，パラメータベクトル $\bs{w}$ を固定したときに観測されたデータ集合がどれぐらい起こりやすいかを表している．尤度は $\bs{w}$ の確率分布ではなく，$\bs{w}$ に関する積分は1になるとは限らないことに注意する．
+
+尤度の定義から，ベイズの定理は言葉で書けば
+\begin{equation} \label{eq:1.44}
+    \text{事後確率} \propto \text{尤度} \times \text{事前確率}
+\end{equation}
+となる．この式に現れるすべての値は $\bs{w}$ の関数とみなせる．\eqref{eq:1.43} の分母は，左辺の事後分布が厳密に確率密度になっており，積分すると1になることを保証する規格化定数である．実際，\eqref{eq:1.43} の両辺を $\bs{w}$ で積分すると，ベイズの定理の分母を事前分布と尤度関数で表すことができ，
+\begin{equation} \label{eq:1.45}
+    p(\CD) = \int p(\CD \mid \bs{w}) p(\bs{w}) d\bs{w}
+\end{equation}
+となる．
+
+ベイズと頻度主義の両方のパラダイムで，尤度関数 $p(\CD \mid \bs{w})$ は重要な役割を果たす．しかしながら，それをどう使うかは2つのアプローチで根本的に異なる．頻度主義的な設定では $\bs{w}$ は固定したパラメータと考えられ，その値は何らかの「推定量」をとして定められ，この推定の誤差範囲は可能なデータ集合 $\CD$ の分布を考慮して得られる．一方ベイズ的な見方ではただ1つの (つまり実際観測された) データ集合 $\CD$ があって，パラメータに関する不確実性は $\bs{w}$ の確率分布として表される．
+
+頻度主義で広く用いられている推定量は\tb{最尤推定} (maximum likelihood) で，$\bs{w}$ は尤度関数 $p(\CD \mid \bs{w})$ を最大にする値である．これは観測されたデータ集合の確率を最大にする $\bs{w}$ の値を選ぶことに相当する．機械学習の分野では，尤度関数の対数の符号を反転したものは\tb{誤差関数} (error function) と呼ばれる．対数のマイナスは単調減少関数だから，尤度の最大化は誤差の最小化と等価である．
+
+頻度主義で誤差範囲を決める1つのアプローチは\tb{ブートストラップ}(bootstrap) と呼ばれているもので，そこでは複数のデータ集合を次のように作る．まず，もととなるデータ集合が $N$ 個のデータ点 $\mb{X} = (\bs{x}_{1},\ldots,\bs{x}_{N})$ からなるとする．$\mb{X}$ からランダムに $N$ 点を復元抽出することによって，新たなデータ集合 $\mb{X}_{\text{B}}$ を作ることができる．$\mb{X}$ のいくつかの点は $\mb{X}_{\text{B}}$ に複数回出現するが，一方 $\mb{X}_{\text{B}}$ に入っていない点も存在することになる．この試行を $L$ 回繰り返すことにより $L$ 組のデータ集合を作ることができ，それぞれのサイズは $N$ で，もとのデータ集合 $\bs{X}$ からサンプリングして得られたものになる．パラメータ推定の統計的な精度は，異なるブートストラップデータ集合に対する予測の変動を見ることによって評価できる\footnote{データ集合を生成した真の分布がわかっていれば，そこからデータ集合を生成しパラメータを推定するというプロセスを何度も繰り返すことによって，パラメータの推定値の分布を得ることができる．しかし一般に真の分布はわからないので，ブートストラップ法ではその矜持として，与えられたデータ集合を真の分布とみなし，そこからブートストラップデータ集合を生成することによって，パラメータの推定値がどのように分布するかを評価するのである．．}．
+
+ベイズ的な視点の利点の1つは事前知識を自然に入れられることである．例えば，公平に見えるコインを3回投げて毎回表が出たとしよう．古典的な最尤推定では表が出る確率は1になってしまう (2.1 節)．これは未来永劫表が出ることを意味している！逆にベイズ的アプローチでは妥当な事前分布を使えばそれほど極端な結論を導くことはない．
+
+頻度主義かベイズ主義かといったパラダイムの利点について多くの論争がなされてきた．頻度主義独自の視点とかベイズ主義独自の視点はないことが問題を困難にしてきた\footnote{頻度主義とベイズ主義の論争のポイントを一言で言えば「どこまで主観性を認めるか」という哲学的問題となる．したがって，さまざまな立場の人がおり，単純に頻度主義対ベイズ主義という構図ではないというのがこの文の意味するところである．本書に関しては，この後にも書かれているように，実用性や有用性を重視し，数学的に矛盾がなければどちらのパラダイムも採用するという立場である．}．例えば，ベイズアプローチによくある批判として，事前分布が何らかの事前の信念というよりは数学的な便宜によって選ばれることが多いというものがある．事前分布の選び方によって結果が主観的になることも人によっては難点と思えるだろう．事前分布への依存を小さくしたいときに，いわゆる\tb{無情報事前分布} (noninformative prior) (2.4.3 節) を使うことがある．しかしながら，これは異なるモデルを比較する際には困難が生じる．また，実際，ベイズ的な方法は，悪い事前分布を選べば，高い確率で悪い結果が得られてしまう．これらの問題は頻度主義的な評価方法によってある程度防ぐことができ，交差確認 (\ref{subsec:model_selection} 節) といったテクニックがモデルの選択などの問題には有効に働く．
+
+ベイズ的な手法が近年実用面で非常に重要になってきているのを考慮し，本書ではベイズ的な視点を強調する一方で，必要に応じて，有用な頻度主義的な概念も議論する．
+
+ベイズの枠組みの源は18世紀にまでさかのぼるものの，ベイズ法の実際への応用は長い間非常に限られたものであった．というのも，ベイズ法を完全に実行するには特に全パラメータ空間での周辺化 (和または積分) を必要としたからである．これらの操作は後から見るように，予測を行ったり，異なるモデルを比較したりするために必要なものである．マルコフ連鎖モンテカルロ法 (11章で議論する) のようなサンプリング法の開発や，計算機の速度やメモリ量の大幅な進歩により，ベイズ法が極めて広い範囲の問題に実用的に使えるようになった．モンテカルロ法は非常に柔軟で，さまざまなモデルに適用可能である．しかしながら，計算量は非常に大きいのでこれまでは主に小さいスケールの問題に用いられてきた．
+
+さらに最近になって，変分ベイズ法や EP 法 (期待値伝播法) といった，非常に能率的な決定論的近似法 (10章で議論する) が開発された．これらの手法はサンプリング法が使えない場合，その代替的手法として使われ，ベイズ法を大規模な応用に適用することを可能にした．
+
+\subsubsection{ガウス分布} \label{subsubsec:Gaussian-dist}
+
+2章全体でいろいろな確率分布やその重要な性質について述べる．ここでは，連続変数の確率分布の中で最も重要な\tb{正規分布} (normal distribution) または\tb{ガウス分布} (Gaussian distribution) と呼ばれる分布を導入する．本章の残りの部分を始め，本書の多くの場所でガウス分布を頻繁に用いる．
+
+実数値変数 $x \in \BR$ に対し，ガウス分布は
+\begin{equation} \label{eq:1.46}
+    \CN(x \mid \mu,\sigma^{2}) = \frac{1}{(2\pi\sigma^{2})^{1/2}} \exp{\left\{-\frac{1}{2\sigma^{2}}(x-\mu)^{2}\right\}}
+\end{equation}
+で定義され，2つのパラメータ，\tb{平均} (mean) $\mu$ および\tb{分散} (vaeriance) $\sigma^{2}$ をもつ．分散の平方根 $\sigma$ は\tb{標準偏差} (standard deviation) と呼ばれ，分散の逆数は $\beta = 1/\sigma^{2}$ と書き，\tb{精度パラメータ} (precision parameter) と呼ぶ．
+
+\eqref{eq:1.46} の形から，ガウス分布は
+\begin{equation} \label{eq:1.47}
+    \CN(x \mid \mu,\sigma^{2}) > 0
+\end{equation}
+を満たすことがわかる．また，ガウス分布が規格化されていることは簡単に示すことができ，
+\begin{equation} \label{eq:1.48}
+    \int_{-\infty}^{\infty} \CN(x \mid \mu,\sigma^{2}) dx = 1
+\end{equation}
+となる (\tb{演習 1.7})．従って，\eqref{eq:1.46} は確率密度の満たすべき2つの要件を満たしている．
+
+ガウス分布の下で $x$ の関数の期待値はすぐに計算することができ，特に $x$ の平均値は，
+\begin{equation} \label{eq:1.49}
+    \BE[x] = \int_{-\infty}^{\infty} \CN(x \mid \mu,\sigma^{2}) x dx = \mu
+\end{equation}
+で与えられる．パラメータ $\mu$ はこの分布の下での $x$ の平均値になるので平均と呼ばれる．同様に，2次のモーメントは
+\begin{equation} \label{eq:1.50}
+    \BE[x^{2}] = \int_{-\infty}^{\infty} \CN(x \mid \mu,\sigma^{2}) x^{2} dx = \mu^{2} + \sigma^{2}
+\end{equation}
+となる (\tb{演習 1.8})．\eqref{eq:1.49} と \eqref{eq:1.50} より，$x$ の分散は
+\begin{equation} \label{eq:1.51}
+    \BV[x] = \BE[x^{2}] - \BE[x]^{2} = \sigma^{2}
+\end{equation}
+で与えられるので，$\sigma^{2}$ を分散パラメータと呼ぶ．分布の最大値を与える $x$ はモード (最頻値) である．ガウス分布に関しては，モードは平均に一致する (\tb{演習 1.9})．
+
+$D$ 次元ベクトルの連続変数 $\bs{x}$ に対して定義されるガウス分布は，
+\begin{equation} \label{eq:1.52}
+    \CN(\bs{x} \mid \bs{\mu}, \bs{\Sigma}) = \frac{1}{(2\pi)^{D/2}} \frac{1}{|\bs{\Sigma}|^{1/2}} \exp{\left\{-\frac{1}{2}(\bs{x}-\bs{\mu})^{\top}\bs{\Sigma}^{-1}(\bs{x}-\bs{\mu})\right\}}
+\end{equation}
+で与えられ，$D$ 次元ベクトル $\bs{\mu}$ は平均，$D \times D$ 行列 $\bs{\Sigma}$ は共分散と呼ばれ，$|\bs{\Sigma}|$ は $\bs{\Sigma}$ の行列式を表す．本章では，多変量ガウス分布も多少用いるが，その詳細な性質は 2.3 節で述べる．
+
+ここで，スカラー変数 $x$ の $N$ 個の観測値からなるデータ集合 $\mb{x} = (x_{1},\ldots,x_{N})^{\top}$ があるとする．未知の平均 $\mu$ と分散 $\sigma^{2}$ をもつガウス分布から独立に生成された観測値があったとき，これらのパラメータの値をデータ集合から定めることを考える．データ点が同じ分布から独立に生成されるとき，\tb{独立同分布} (independent identically distributed) であるといい，i.i.d. と略す．2つの独立な事象の同時確率はそれぞれの事象の周辺確率の積で与えられるので，データ集合 $\mb{x}$ が i.i.d. であることから，$\mu$ と $\sigma^{2}$ が与えられたとき，データ集合の確率は
+\begin{equation} \label{eq:1.53}
+    p(\mb{x} \mid \mu,\sigma^{2}) = \prod_{n=1}^{N} \CN(x_{n} \mid \mu,\sigma^{2})
+\end{equation}
+という形に書ける．$\mu$ と $\sigma^{2}$ の関数とみなすと，これはガウス分布に対する尤度関数である．
+
+観測されたデータ集合を使って確率分布のパラメータを決める普通の方法は，尤度関数を最大にするようなパラメータの値を求めることである．この規準は，確率論に関する今までの議論からすると，奇妙に思えるかもしれない．なぜなら，パラメータが与えられた下でのデータの確率でなく，むしろデータが与えられた下でのパラメータの確率を最大化する法が自然に見えるからである．実際にこの2つの規準は関連しており，曲線フィッティングの問題を使って後ほど議論する (\ref{subsubsec:revisitting_curve_fitting} 節)．
+
+ここでは，尤度関数 \eqref{eq:1.53} を最大化することによって，ガウス分布の未知のパラメータ $\mu$ と $\sigma^{2}$ を決めることにする．実際には，以下の観点から，尤度関数の対数 (対数尤度関数) を最小化する法が便利である．
+\begin{itemize}
+    \item 対数関数は単調増加関数なので，尤度関数の最大化は対数尤度関数の最小化と等価
+    \item 尤度関数における積を和に変換することができ，微分計算が容易
+    \item 数値計算をする際，尤度関数における小さな確率値の積は計算機の数値精度のアンダーフローを容易に引き起こすが，これが確率値の対数の和に変換されることで，この問題を解決することができる
+\end{itemize}
+\eqref{eq:1.46} と \eqref{eq:1.53} から，対数尤度関数は
+\begin{align} \label{eq:1.54}
+    \begin{aligned}
+        \ln p(\mb{x} \mid \mu,\sigma^{2}) &= \ln \left(\prod_{n=1}^{N} \frac{1}{(2\pi\sigma^{2})^{1/2}} \exp{\left\{-\frac{1}{2\sigma^{2}}(x_{n}-\mu)^{2}\right\}}\right) \\
+        &=-\frac{1}{2\sigma^{2}} \sum_{n=1}^{N} (x_{n}-\mu)^{2} - \frac{N}{2} \ln \sigma^{2} - \frac{N}{2} \ln (2\pi)
+    \end{aligned}
+\end{align}
+という形になる．\eqref{eq:1.54} を $\mu$ と $\sigma^{2}$ に関して最大化することで，最尤推定の解が得られる．\eqref{eq:1.54} を $\mu$ に関して最大化すると，
+\begin{equation} \label{eq:1.55}
+    \mu_{\text{ML}} = \frac{1}{N} \sum_{n=1}^{N} x_{n}
+\end{equation}
+で与えられ，これは\tb{標本平均} (sample mean)，すなわち観測値 $\{x_{n}\}$ の平均に等しい．同様に，\eqref{eq:1.54} を $\sigma^{2}$ に関して最大化すると，分散に対する最尤解
+\begin{equation} \label{eq:1.56}
+    \sigma_{\text{ML}}^{2} = \frac{1}{N} \sum_{n=1}^{N} (x_{n}-\mu_{\text{ML}})^{2}
+\end{equation}
+を得る (\tb{演習 1.11})．これは標本平均 $\mu_{\text{ML}}$ に関する\tb{標本分散} (sample variance) である．$\mu$ と $\sigma^{2}$ に関して \eqref{eq:1.54} の同時最大化を行うとき，ガウス分布の場合には $\mu$ と $\sigma^{2}$ は分離して解けるので，まず \eqref{eq:1.55} を評価し，この結果を使って \eqref{eq:1.56} を評価することができる．
+
+本章の後半およびその後の章では，最尤アプローチの重大な限界について述べる．ここでは，1変数ガウス分布の最尤パラメータの設定に関してその問題を取り扱う．最尤アプローチでは特に分布の分散が系統的に過小評価されている．これは\tb{バイアス} (bias) と呼ばれる現象の例であり，多項式曲線のフィッティングにおける過学習の問題に関連している (\ref{subsec:poly_fitting} 節)．まず，最尤解 $\mu_{\text{ML}},\sigma_{\text{ML}}^{2}$ はデータ集合の値 $x_{1},\ldots,x_{N}$ の関数であることに注意する．これらの量の，パラメータ $\mu,\sigma^{2}$ を持つガウス分布に従うデータ集合に関する期待値を考える．簡単な計算で
+\begin{align}
+    \BE[\mu_{\text{ML}}] &= \mu, \label{eq:1.57}\\
+    \BE[\sigma_{\text{ML}}^{2}] &= \left(\frac{N-1}{N}\right) \sigma^{2} \label{eq:1.58}
+\end{align}
+となり，最尤推定の平均は正しい平均になるが，真の分散は $(N-1)/N$ 倍過小評価されることが示される (\tb{演習 1.12})．\eqref{eq:1.58} から，
+\begin{equation} \label{eq:1.59}
+    \widetilde{\sigma}^{2} = \frac{N}{N-1} \sigma_{\text{ML}}^{2} = \frac{1}{N-1} \sum_{n=1}^{N} (x_{n}-\mu_{\text{ML}})^{2}
+\end{equation}
+は分散パラメータの不偏推定量になる．10.1.3 節では，この結果がベイズアプローチによってどのように自動的に得られるかがわかる．
+
+最尤解のバイアスはデータ点の数 $N$ が増えればあまり重大ではなくなり，$N \rightarrow \infty$ の極限では分散の最尤解はデータを生成した分布の真の分散に一致することに注意する．実際には $N$ が小さいという理由以外では，バイアスは深刻な問題にはならないことがはっきり示されている．しかしながら本書を通して，多くのパラメータを持つより複雑なモデルを扱うので，最尤推定に伴うバイアスの問題ははるかに厳しいものとなる．実際，最尤推定のバイアスの問題は多項式曲線フィッティングの例で前にみたように，過学習の問題の根本にあることがわかる．
+
+\subsubsection{曲線フィッティング再訪} \label{subsubsec:revisitting_curve_fitting}
+
+\ref{subsec:poly_fitting} 節では，多項式曲線のフィッティング問題が誤差最小化としてどう表現することができるかを見てきた．ここでは曲線フィッティングの例に戻って，それを確率的な観点から眺め，誤差関数と正則化に関する洞察を得るとともに，完全なベイズ的取り扱いに進むことにする．
+
+曲線フィッティング問題の目標は，$N$ 個の入力値で構成される訓練データの集合 $\mb{x} = (x_{1},\ldots,x_{N})^{\top}$ とそれに対応する目標値 $\mb{t} = (t_{1},\ldots,t_{N})^{\top}$ に基づいて，与えられた新たな入力値 $x$ に対する目的変数 $t$ の予測ができるようにすることである．目標変数の値に関する不確実性は確率分布を使って表すことができる．そのために，与えられた $x$ に対し，対応する $t$ は，平均が \eqref{eq:1.1} で与えられる多項式曲線 $y(x,\bs{w})$ に等しいガウス分布に従うものとする．すなわち，
+\begin{equation} \label{eq:1.60}
+    p(t \mid x,\bs{w},\beta) = \CN(t \mid y(x,\bs{w}),\beta^{-1})
+\end{equation}
+となる．ここで事象以降の記号と合わせるために，分布の逆分散に相当する精度パラメータ $\beta$ を定義した．
+
+これで訓練データ $\{\mb{x},\mb{t}\}$ を使って未知のパラメータ $\bs{w},\beta$ を求めるのに最尤推定を使うことができる．データ \eqref{eq:1.60} の分布から独立に生成されたものと仮定すれば，尤度関数は
+\begin{equation} \label{eq:1.61}
+    p(\mb{t} \mid \mb{x},\bs{w},\beta) = \prod_{n=1}^{N} \CN(t_{n} \mid y(x_{n},\bs{w}),\beta^{-1})
+\end{equation}
+で与えられる．この尤度関数 $p(\mb{t} \mid \mb{x},\bs{w},\beta)$ に関する対数尤度関数は，
+\begin{equation} \label{eq:1.62}
+    \ln p(\mb{t} \mid \mb{x},\bs{w},\beta) = -\frac{\beta}{2} \sum_{n=1}^{N} \{y(x_{n},\bs{w}) - t_{n}\}^{2} + \frac{N}{2} \ln \beta - \frac{N}{2} \ln (2\pi)
+\end{equation}
+という形で得られる．まず，最尤解によって定まる多項式の係数 $\bs{w}_{\text{ML}}$ を考える．これは \eqref{eq:1.62} を $\bs{w}$ について最大化することによって求められるが，$\bs{w}$ に依存しない \eqref{eq:1.62} の右辺第2項および第3項を無視し，同じく $\bs{w}$ に依存しない $\beta/2$ を $1/2$ に置き換え，対数尤度関数の最大化の代わりに負の対数尤度関数の最小化を考えることで，$\bs{w}$ を求めるという観点からは \eqref{eq:1.2} で定義される\tb{二乗和誤差} (sum-of-squares error) の最小化と等価であることがわかる．したがって，二乗和誤差関数はノイズがガウス分布に従うという仮定の下で尤度の最大化の結果としてみなせる．
+
+条件付きガウス分布の精度パラメータ $\beta$ を決めるのにも最尤推定を使うことができる．\eqref{eq:1.62} を $\beta$ について最大化すると，
+\begin{equation} \label{eq:1.63}
+    \frac{1}{\beta_{\text{ML}}} = \frac{1}{N} \sum_{n=1}^{N} \{y(x_{n},\bs{w}_{\text{ML}}) - t_{n}\}^{2}
+\end{equation}
+を得る．この場合も，パラメータベクトル $\bs{w}_{\text{ML}}$ を最初に決めて，そこから上の式の平均を計算することによって，精度パラメータ $\beta_{\text{ML}}$ を求めることができる．これは単純なガウス分布の場合 (\ref{subsubsec:Gaussian-dist} 節) と同様である．
+
+パラメータ $\bs{w},\beta$ が決まれば，$x$ の新たな値に対する予測ができる．確率モデルで定式化したので，それらは単なる点予測値ではなく，\tb{予測分布} (predictive distribution) という形で $t$ の確率分布を与えることができる．それは \eqref{eq:1.60} 式を最尤パラメータで置き換えれば，
+\begin{equation} \label{eq:1.64}
+    p(t \mid x,\bs{w}_{\text{ML}},\beta_{\text{ML}}) = \CN(t \mid y(x,\bs{w}_{\text{ML}}),\beta_{\text{ML}}^{-1})
+\end{equation}
+という形で与えられる．
+
+さて，多項式の係数 $\bs{w}$ に関する事前分布を導入し，よりベイズ的なアプローチに進むことにする．簡単のため，$\bs{w}$ に関する事前分布として，
+\begin{equation} \label{eq:1.65}
+    p(\bs{w} \mid \alpha) = \CN(\bs{w} \mid \bs{0},\alpha^{-1}\mb{I}) = \left(\frac{\alpha}{2\pi}\right)^{(M+1)/2} \exp{\left\{-\frac{\alpha}{2} \bs{w}^{\top}\bs{w}\right\}}
+\end{equation}
+という形のガウス分布を考える．ここで $\alpha$ は分布の精度パラメータであり，$M+1$ は $M$ 次多項式に対するベクトル $\bs{w}$ の要素数である．$\alpha$ のようにモデルパラメータの分布を制御するパラメータを\tb{ハイパーパラメータ} (hyperparameter) と呼ぶ．ベイズの定理から，$\bs{w}$ の事後分布は事前分布と尤度関数との積に比例し，
+\begin{equation} \label{eq:1.66}
+    p(\bs{w} \mid \mb{x},\mb{t},\alpha,\beta) \propto p(\mb{t} \mid \mb{x},\bs{w},\beta) p(\bs{w} \mid \alpha)
+\end{equation}
+となる．これで与えられたデータに基づいて最も確からしい $\bs{w}$ の値を見つける．言い換えれば，事後分布を最大化する $\bs{w}$ を決めることができる．このテクニックを\tb{最大事後確率推定} (maximum posterior) あるいは単に \tb{MAP} 推定と呼ぶ\footnote{MAP は \tb{M}aximum \tb{a} \tb{p}osteriori の頭文字をとったものである．}．\eqref{eq:1.66} の対数を符号反転し，\eqref{eq:1.62} および \eqref{eq:1.65} における $\bs{w}$ に依存する項と組み合わせて，事後確率の最大値は，
+\begin{equation} \label{eq:1.67}
+    \frac{\beta}{2} \sum_{n=1}^{N} \{y(x_{n},\bs{w}) - t_{n}\}^{2} + \frac{\alpha}{2} \bs{w}^{\top}\bs{w} = \beta \left(\frac{1}{2} \sum_{n=1}^{N} \{y(x_{n},\bs{w}) - t_{n}\}^{2} + \frac{1}{2} \frac{\alpha}{\beta} \norm{\bs{w}}_{2}^{2}\right)
+\end{equation}
+の最小値として与えられることがわかる．したがって，事後分布の最大化は，前に \eqref{eq:1.4} の形で用いた正則化された二乗和誤差の最小化と等価であることがわかる．なお，正則化パラメータは $\lambda = \alpha/\beta$ で与えられる．
+
+\subsubsection{ベイズ曲線フィッティング} \label{subsubsec:Bayesian curve fitting}
+
+事前分布 $p(\bs{w} \mid \alpha)$ を組み込んだものの，今のところ $\bs{w}$ の点推定を行なっているだけで，これはまだベイズ的な扱いとは言えない．完全なベイズアプローチでは，確率の加法・乗法定理を矛盾なく適用して，$\bs{w}$ のすべての値に関して積分する必要があることをこの後すぐに示す．そのような周辺化はパターン認識のベイズ手法の根幹になる．
+
+曲線フィッティングの問題では，訓練データとして $\mb{x}$ と $\mb{t}$ が与えられ，新たなテスト点 $x$ に対する値 $t$ を予測することが目標である．したがって，予測分布 $p(t \mid x,\mb{x},\mb{t})$ を評価してみたい．ここで，パラメータ $\alpha,\beta$ は固定されており事前にわかっているとする (後の章で，こうしたパラメータがベイズの枠組みでデータからどのように推論できるかを議論する)．
+
+ベイズ的な扱いというのは，確率の加法・乗法定理を矛盾なく適用することに他ならない．すなわち，予測分布は，
+\begin{equation} \label{eq:1.68}
+    p(t \mid x,\mb{x},\mb{t}) = \int p(t \mid x,\bs{w}) p(\bs{w} \mid \mb{x},\mb{t}) d{\bs{w}}
+\end{equation}
+という形で書ける．ここで，$p(t \mid x,\bs{w})$ は \eqref{eq:1.60} で与えられ，$\alpha$ と $\beta$ への依存は単純化のため省略して書いた．また，$p(\bs{w} \mid \mb{x},\mb{t})$ はパラメータの事後分布で，\eqref{eq:1.66} の右辺を規格化することにより求められる．3.3 節で示すように，曲線フィッティングの例のような問題では，この事後分布はガウス分布となり，解析的に求めることができる．同様に \eqref{eq:1.68} の積分も解析的に解け，予測分布はガウス分布
+\begin{equation} \label{eq:1.69}
+    p(t \mid x,\mb{x},\mb{t}) = \CN\left(t \mid m(x),s^{2}(x)\right)
+\end{equation}
+の形で与えられる．平均と分散は
+\begin{align}
+    m(x) &= \beta\bs{\phi}(x)^{\top} \mb{S} \sum_{n=1}^{N} \bs{\phi}(x_{n}) t_{n}, \label{eq:1.70} \\
+    s^{2}(x) &= \beta^{-1} + \bs{\phi}(x)^{\top} \mb{S} \bs{\phi}(x) \label{eq:1.71}
+\end{align}
+となり，行列 $\mb{S}$ は
+\begin{equation} \label{eq:1.72}
+    \mb{S}^{-1} = \alpha \mb{I} + \beta \sum_{n=1}^{N} \bs{\phi}(x_{n})\bs{\phi}(x_{n})^{\top}
+\end{equation}
+で与えられる．ただし，$\mb{I}$ は単位行列で，$\phi_{i}(x) = x^{i}\ (i=0,\ldots,M)$ に対して $\bs{\phi}(x) = (\phi_{0}(x),\ldots,\phi_{M}(x))^{\top}$ である．
+
+\eqref{eq:1.69} における予測分布の分散や平均は $x$ に依存していることがわかる．\eqref{eq:1.71} の第1項は，$t$ の予測値の目標変数のノイズによる不確実性を表しており，最尤推定の予測分布 \eqref{eq:1.64} で $\beta_{\text{ML}}^{-1}$ としたものに対応する．しかしながら，第2項はベイズ的な扱いによって出てきたもので，パラメータ $\bs{w}$ に対する不確実性である．
+
+\subsection{モデル選択} \label{subsec:model_selection}
+
+最小二乗法で多項式曲線をあてはめた例において，最も良い汎化を示した最適な次数の多項式があることを見た．多項式の次数はモデルの自由パラメータの数を制御し，したがってモデルの複雑さを支配する．正則化した最小二乗法では，正則化係数 $\lambda$ もモデルの実質的な複雑さを制御しており，一方混合分布やニューラルネットワークといったより複雑なモデルにおいては，複雑さを支配する複数のパラメータがあり得る．実際の応用ではそのようなパラメータの値を決めなければならないが，その主な目的は通常，新たなデータに対して最も良い予測をすることである．さらに，与えられたモデル内の複雑さパラメータの適切な値を決めるのと合わせて，異なる型のモデルも考慮して，それぞれの応用ごとに最も良いモデルを見つけたい．
+
+すでに見たように，最尤アプローチでは過学習の問題があるので，訓練集合に対する性能というのは未知データの予測性能の良い指標ではない．データが十分にあるときの単純なアプローチは，手持ちのデータの一部を使っていろいろなモデルを学習するか，あるいは1つのモデルの複雑さパラメータの値を変えるかした後，独立なデータでそれらを比較し，最も予測性能の良いものを選ぶというものである．この比較用のデータは\tb{検証用集合} (validation set) と呼ばれる．限られたサイズのデータ集合を使ってモデルの設計を何度も繰り返すと検証用集合にも過学習してしまうことがあるので，3番目の\tb{テスト集合} (test set) を別に用意しておいて，選んだモデルの性能を最終的に評価する必要がある．
+
+しかしながら，多くの応用では訓練とテストに使えるデータは限られており，良いモデルを作るためには得られたデータはできるだけたくさん訓練に使いたい．一方，検証用集合が小さいと予測性能の推定の誤差が大きくなる．このジレンマを解くために，\tb{交差検証} (cross-validation) という方法がある．$S$ 分割交差検証では，得られたデータのうち $(S-1)/S$ の割合部分を訓練に使いつつ，全データを性能の評価に使うことができる．データが特に少ないときには，データ点数を $N$ としたときに $S=N$ と考えるのが妥当であり，これを \tb{LOO 法} (1個抜き法; leave-one-out method) と呼ぶ．
+
+交差検証の大きな欠点の1つは，訓練を行わなければならない回数が $S$ に比例して大きくなることであり，1回の訓練自体に大きな計算量が必要な場合には問題である．さらに，交差検証のように性能を測るのに別のデータを使うテクニックでは，単独のモデルでも複数の複雑さパラメータを持つ場合に問題が出てくる (例えば複数の正則化パラメータを持つ場合)．そのようなパラメータの組み合わせをいろいろ試すには，最悪の場合，パラメータの数に対して指数関数的に訓練回数が増える可能性があるため，明らかにより良いアプローチが必要となる．理想的には，訓練データだけに依存し，1回の訓練だけで複数のハイパーパラメータとモデルのタイプを比較できるものが望ましい．そこで，訓練データだけに依存し，過学習によるバイアスを持たない性能の尺度を見つけることが必要となる．
+
+歴史的には，さまざまな「情報量規準」(information criterion) と呼ばれるものが提案されてきた．これは，より複雑なモデルによる過学習を避ける罰則項を足すことによって最尤推定のバイアスを修正しようというものである．例えば\tb{赤池情報量規準} (Akaike information criterion) あるいは AIC (Akaike, 1974) は
+\begin{equation} \label{eq:1.73}
+    \ln p(\CD \mid \bs{w}_{\text{ML}}) - M
+\end{equation}
+という値が最大になるモデルを選ぶ．ここで，$p(\CD \mid \bs{w}_{\text{ML}})$ は最尤推定を行った場合の対数尤度で，$M$ はモデルの中の可変パラメータの数である．これの変種に\tb{ベイズ情報量規準} (Bayesian information criterion) あるいは \tb{BIC} というものがあり，4.4.1 節で議論する．しかしながら，こうした規準はモデルパラメータの不確実性は考慮しておらず，実際には過度に単純なモデルを選ぶ傾向にある．そこで，3.4 節では複雑さに罰則を与えるのに自然で理にかなった方法として，完全なベイズアプローチを採用する．
+
+\subsection{次元の呪い} \label{subsec:the_curse_of_dimensionality}
+
+多項式曲線フィッティングの例では1つだけの入力変数 $x$ を考えた．しかしながら，パターン認識の実際の応用では多くの入力変数を持つ高次元空間を扱う場合がある．以下で議論するように，高次元空間の取り扱いは非常に難しい課題であり，パターン認識テクニックの設計に重要な影響を与える要因である．
+
+高次元の問題について洞察を得るために，多項式曲線フィッティングの例 (\ref{subsec:poly_fitting} 節) に戻って，このアプローチを複数個の入力変数の場合に拡張した場合にどうなるかを見てみよう．入力変数が $D$ 個あるとき，3次までの多項式は一般に
+\begin{equation} \label{eq:1.74}
+    y(\bs{x}, \bs{w}) = w_{0} + \sum_{i=1}^{D} w_{i}x_{i} + \sum_{i=1}^{D} \sum_{j=1}^{D} w_{ij}x_{i}x_{j} + \sum_{i=1}^{D} \sum_{j=1}^{D} \sum_{k=1}^{D} w_{ijk}x_{i}x_{j}x_{k}
+\end{equation}
+という形をとる．$D$ が増えると独立な係数 (変数 $x$ 内の置換対称性によってすべての係数が独立というわけではない) の数は $D^{3}$ に比例する．実際，データの複雑な依存関係を捉えるためには，より高次の多項式が必要となることもある．$M$ 次の多項式では係数の数は $D^{M}$ のように増える (\tb{演習 1.16})．これは指数的な増加ではなく，べき乗の増加であるものの，これでもまだ手に負えないほど速い増加であり，実際に使うには限界がある．
+
+3次元空間での生活経験を通じて形成された我々の幾何的直感は，高次元空間を考えるときには誤りに陥りやすい．簡単な例として，$D$ 次元空間の半径 $r=1$ の球を考え，$r=1-\epsilon$ と $r=1$ の間にある体積の割合がどれだけになるかを考える．この割合を評価するために，まず，$D$ 次元の半径 $r$ の球の体積を考えると，それは $r^{D}$ のスケールになることから
+\begin{equation} \label{eq:1.75}
+    V_{D}(r) = K_{D}r^{D}
+\end{equation}
+と書ける．ここで，定数 $K_{D}$ は $D$ のみに依存する (\tb{演習 1.18})．したがって，求める比は
+\begin{equation} \label{eq:1.76}
+    \frac{V_{D}(1) - V_{D}(1-\epsilon)}{V_{D}(1)} = \frac{K_{D} - K_{D}(1-\epsilon)^{D}}{K_{D}} = 1 - (1-\epsilon)^{D}
+\end{equation}
+で与えられる．これをいろいろな $D$ の値に対して $\epsilon$ の関数としてプロットすると，大きな $D$ では，この比が小さな $\epsilon$ に対しても1に近いことがわかる．したがって，高次元では球のほとんどの体積は表面に近い薄皮に集中している．
+
+さらなる例として，パターン認識に直接関連する高次元ガウス分布の振る舞いを考える．直交座標を極座標に変換し，角度方向について積分すると，原点からの半径 $r$ の関数として密度 $p(r)$ が得られる (\tb{演習 1.20})．したがって，$p(r) \delta r$ は半径 $r$ の位置の暑さ $\delta r$ の薄皮中の確率質量である．この分布の値をいろいろな $D$ の値に対してプロットすると，$D$ が大きくなるにつれて，ガウス分布の確率質量はある特定の半径における薄皮に集中することがわかる．
+
+大きい次元の空間に伴う困難のことを\tb{次元の呪い} (curse of dimensionality) (Bellman, 1961) と呼ぶことがある．本書では各種手法を図的に解説するのが特に容易なので入力次元が1次元または2次元での例示を多用する．しかしながら，低次元での直感が大きい次元に一般化できるとは限らないことに注意する必要がある．
+
+次元の呪いはパターン認識の応用において重要な問題となることは確かではあるものの，高次元空間に有効な手法がないわけではない．この理由は2つある．1つ目は，実データは多くの場合，実質的には低い次元の領域に入っており，さらに，特に目標変数の重要な変化が生じる方向というのは限定されることが多いことである．2つ目は，実データが (少なくとも局所的には) 一般的に滑らかな性質を持っており，そのため大体において入力空間上での小さな変化は目標変数に関して小さい変化しか与えないので，局所的な内挿のような手法で入力変数の新たな値に対する予測をすることができることである．うまく働くパターン認識テクニックはこれらの性質の1つまたは両方を備えている．例えば，工場でベルトコンベアの上の2次元形状の物体をキャプチャした画像から，その向きを決めるという問題を考える．各画像は次元がピクセル数で決まる高次元空間上の点である．物体は画像中で異なった位置と方向を持ち得るので，画像の間には3つの自由度があり，画像の集合は高次元空間に埋め込まれた3次元の\tb{多様体} (manifold) の上にある．物体の位置や方向とピクセル強度の間には複雑な関係があるので，この多様体は高度に非線形となる．画像を入力とし，物体の位置とは無関係に，その方向だけを出力するモデルを学習することが目標ならば，多様体の中の1自由度だけが重要な変量となる．
+
+\subsection{決定理論} \label{subsec:decision_theory}
+
+\subsubsection{誤識別率の最小化}
+
+\subsubsection{期待損失の最小化}
+
+\subsubsection{棄却オプション}
+
+\subsubsection{推論と決定}
+
+\subsubsection{回帰のための損失関数}
+
+\subsection{情報理論}
+
+\subsubsection{相対エントロピーと相互情報量}
+
+\subsection{演習問題}
+
+\begin{description}
+
+\item[1.1 (基本)] \fbox{www} 関数 $y(x, \bs{w})$ が多項式 \eqref{eq:1.1} で与えられたときの \eqref{eq:1.2} の二乗和誤差関数を考える．この誤差関数を最小にする係数 $\bs{w} = \{w_{i}\}$ は以下の線形方程式の解として与えられることを示せ．
+\begin{equation} \label{eq:1.122}
+    \sum_{j=0}^{M} A_{ij} w_{j} = T_{i}.
+\end{equation}
+ただし，
+\begin{equation}
+    A_{ij} = \sum_{n=1}^{N} (x_{n})^{i+j}, \qquad T_{i} = \sum_{n=1}^{N} (x_{n})^{i} t_{n}.
+\end{equation}
+ここで，下付き添え字の $i$ や $j$ は成分を表し，$(x)^{i}$ は $x$ の $i$ 乗を表す．
+
+\item[(解答)] \eqref{eq:1.1} を \eqref{eq:1.2} に代入すると，
+\begin{equation}
+    E(\bs{w}) = \frac{1}{2} \sum_{n=1}^{N} \left(\sum_{j=0}^{M} w_{j}(x_{n})^{j} - t_{n}\right)^{2}
+\end{equation}
+となり，
+\begin{align}
+    \begin{aligned}
+        \frac{\partial E(\bs{w})}{\partial w_{i}} &= \frac{1}{2} \sum_{n=1}^{N} \cdot 2 \left(\sum_{j=0}^{M} w_{j}(x_{n})^{j} - t_{n}\right) \cdot (x_{n})^{i} \\
+        &= \sum_{n=1}^{N} \sum_{j=0}^{M} w_{j}(x_{n})^{i+j} - \sum_{n=1}^{N} (x_{n})^{i}t_{n} \\
+        &= \sum_{j=0}^{M} \left(\sum_{n=1}^{N} (x_{n})^{i+j}\right) w_{j} - \sum_{n=1}^{N} (x_{n})^{i}t_{n} \\
+        &= \sum_{j=0}^{M} A_{ij}w_{j} - T_{i}
+    \end{aligned}
+\end{align}
+を得る．これより，誤差関数を最小にする $\bs{w} = \{w_{i}\}$ は，線形方程式系
+\begin{equation}
+    \frac{\partial{E(\bs{w})}}{\partial{w_{i}}} = 0 \iff \sum_{j=0}^{M} A_{ij}w_{j} = T_{i}
+\end{equation}
+の解として与えられる．\qed
+
+\item[1.2 (基本)] 正則化された二乗和誤差関数 \eqref{eq:1.4} を最小にする係数 $w_{i}$ が満たす，\eqref{eq:1.122} に類似した線形方程式系を書き下せ．
+
+\item[(解答)] 正則化された二乗和誤差関数 \eqref{eq:1.4} は
+\begin{equation}
+    \widetilde{E}(\bs{w}) = E(\bs{w}) + \frac{\lambda}{2} \norm{w}_{2}^{2}
+\end{equation}
+ゆえ，演習 1.1 の結果より
+\begin{align}
+    \begin{aligned}
+        \frac{\partial{\widetilde{E}(\bs{w})}}{\partial{w_{i}}} &= \frac{\partial{E(\bs{w})}}{\partial{w_{i}}} + \frac{\partial}{\partial{w_{i}}} \frac{\lambda}{2} \norm{w}_{2}^{2} \\
+        &= \sum_{j=0}^{M} A_{ij}w_{j} - T_{i} + \lambda w_{i} \\
+        &= \sum_{j=0}^{M} (A_{ij} + I_{ij}\lambda) w_{j} - T_{i}
+    \end{aligned}
+\end{align}
+を得る．ただし，
+\begin{equation}
+    I_{ij} = \begin{dcases}
+        1, & i=j, \\
+        0, & \text{otherwise}
+    \end{dcases}
+\end{equation}
+である．これより，正則化された二乗和誤差関数 \eqref{eq:1.4} を最小にする係数 $w_{i}$ が満たす線形方程式系は，
+\begin{equation}
+    \frac{\partial{\widetilde{E}(\bs{w})}}{\partial{w_{i}}} = 0 \iff \sum_{j=0}^{M} (A_{ij} + I_{ij}\lambda) w_{j} = T_{i}
+\end{equation}
+で与えられる．
+
+\item[1.3 (標準)] 3個の色分けされた箱 $r$ (赤) ，$b$ (青) ，$g$ (緑) を考える．箱 $r$ には3個のりんご，4個のオレンジ，3個のライムが入っており，箱 $b$ には1個のりんご，1個のオレンジ，0個のライムが入っており，箱 $g$ には3個のりんご，3個のオレンジ，4個のライムが入っている．箱を $p(r) = 0.2, p(b) = 0.2, p(g) = 0.6$ という確率でランダムに選び，果物を箱から1個取り出す (箱の中のものは等確率で選ばれるとする) とき，りんごを選び出す確率を求めよ．また，選んだ果物がオレンジであったとき，それが緑の箱から取り出されたものである確率はいくらか？
+
+\item[(解答)] 省略．
+
+\item[1.4 (標準)] \fbox{www} 連続変数 $x$ 上で定義された確率密度 $p_{x}(x)$ を考える．$x = g(y)$ により非線形変換を施すと密度は \eqref{eq:1.27} の変換を受ける．\eqref{eq:1.27} を微分して，$y$ に関する密度を最大にする位置 $\hat{y}$ と $x$ に関する密度を最大にする位置 $\hat{x}$ とが，ヤコビ因子の影響により一般には単純な $\hat{x} = g(\hat{y})$ という関係にないことを示せ．これは確率密度の最大値が，(通常の関数と異なり) 変数の選択に依存することを示している．線形変換の場合には最大値の位置が変数自身と同じ変換を受けることを確かめよ．
+
+\item[(解答)] 
+
+\item[1.5 (基本)] \eqref{eq:1.38} の定義を使って $\BV[f(x)]$ が \eqref{eq:1.39} を満たすことを示せ．
+
+\item[(解答)] 期待値の線形性より明らか．\qed
+
+\item[1.6 (基本)] 2つの変数 $x,y$ が独立なら，その共分散は0になることを示せ．
+
+\item[(解答)] 独立性の定義より
+\begin{align}
+    \begin{aligned}
+        \cov{x,y} &= \BE_{x,y}[(x - \BE[x])(y - \BE[y])] = \BE_{x,y}[xy] - \BE[x]\BE[y] \\
+        &= \int_{\CY} \int_{\CX} p_{x,y}(x,y) d\mu_{x}(x) d\mu_{y}(y) - \int_{\CX} p_{x}(x) d\mu_{x}(x) \int_{\CY} p_{y}(y) d\mu_{y}(y) \\
+        &= 0 \qquad (\because p_{x,y}(x,y) = p_{x}(x)p_{y}(y))
+    \end{aligned}
+\end{align}
+を得る．ただし．$d\mu_{x}(x)$ は $x$ が離散型確率変数の場合は計数測度を表し，$x$ が連続型確率変数の場合はルベーグ測度を表す．\qed
+
+\item[1.7 (標準)] \fbox{www} この演習問題では，1変数ガウス分布に関する規格化条件 \eqref{eq:1.48} を証明する．このために，積分
+\begin{equation} \label{eq:1.124}
+    I = \int_{-\infty}^{\infty} \exp{\left(-\frac{1}{2\sigma^{2}}x^{2}\right)} dx
+\end{equation}
+を考え，その2乗を
+\begin{equation} \label{eq:1.125}
+    I^{2} = \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} \exp{\left(-\frac{1}{2\sigma^{2}}x^{2}-\frac{1}{2\sigma^{2}}y^{2}\right)} dx dy
+\end{equation}
+の形で書いて評価する．直交座標系 $(x,y)$ から極座標 $(r,\theta)$ に変換し，$u = r^{2}$ を代入する．$\theta$ と $u$ に関する積分を実行し，両辺の平方根をとることにより，
+\begin{equation} \label{eq:1.126}
+    I = (2\pi\sigma^{2})^{1/2}
+\end{equation}
+が得られることを示せ．最後にこの結果からガウス分布 $\CN(x \mid \mu,\sigma^{2})$ が規格化されていることを示せ．
+
+\item[(解答)] 直交座標 $(x,y)$ に対して極座標変換 $x = r\cos{\theta}, y = r\sin{\theta}\ (r \ge 0, 0 \le \theta < 2\pi)$ を施すと，そのヤコビアンは
+\begin{equation}
+    |J| = \begin{vmatrix}
+        \partial x / \partial r & \partial x / \partial \theta \\
+        \partial y / \partial r & \partial y / \partial \theta
+    \end{vmatrix} = \begin{vmatrix}
+        \cos{\theta} & -r\sin{\theta} \\
+        \sin{\theta} & r\cos{\theta}
+    \end{vmatrix} = r
+\end{equation}
+となるので，$dxdy = rdrd{\theta}$ ゆえ
+\begin{align}
+    \begin{aligned}
+        I^{2} &= \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} \exp{\left(-\frac{1}{2\sigma^{2}}x^{2}-\frac{1}{2\sigma^{2}}y^{2}\right)} dx dy = \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} \exp{\left(-\frac{1}{2\sigma^{2}}(x^{2} + y^{2})\right)} dx dy \\
+        &= \int_{0}^{2\pi} \int_{0}^{\infty} r \exp{\left(-\frac{1}{2\sigma^{2}}r^{2}\right)} drd{\theta} = \int_{0}^{2\pi} \left[-\sigma^{2} \exp{\left(-\frac{1}{2\sigma^{2}}r^{2}\right)}\right]_{r=0}^{r=\infty} d{\theta} \\
+        &= 2\pi\sigma^{2}
+    \end{aligned}
+\end{align}
+となるので，両辺の平方根をとることにより \eqref{eq:1.126} を得る．ガウス分布 $\CN(x \mid \mu,\sigma^{2})$ が規格化されていることは明らか．\qed
+
+\item[1.8 (標準)] \fbox{www} 変数変換を使って1変数ガウス分布 \eqref{eq:1.46} が \eqref{eq:1.49} を満たすことを確かめよ．次に規格化条件
+\begin{equation} \label{eq:1.127}
+    \int_{-\infty}^{\infty} \CN(x \mid \mu,\sigma^{2}) dx = 1
+\end{equation}
+の両辺を $\sigma^{2}$ に関して微分し，ガウス分布が \eqref{eq:1.50} を満たすことを確かめよ．最後に，\eqref{eq:1.51} が成り立つことを示せ．
+
+\item[(解答)] まず，\eqref{eq:1.36} より
+\begin{align}
+    \begin{aligned}
+        \BE[x] &= \int_{-\infty}^{\infty} \CN(x \mid \mu,\sigma^{2}) x dx = \frac{1}{(2\pi\sigma)^{1/2}} \int_{-\infty}^{\infty} x \exp{\left\{-\frac{1}{2\sigma^{2}}(x-\mu)^{2}\right\}} dx \\
+        &= \frac{1}{(2\pi\sigma)^{1/2}} \int_{-\infty}^{\infty} (y+\mu) \exp{\left\{-\frac{1}{2\sigma^{2}}y^{2}\right\}} dy \qquad (y \coloneqq x-\mu) \\
+        &= \frac{1}{(2\pi\sigma)^{1/2}} \left\{\int_{-\infty}^{\infty} y \exp{\left\{-\frac{1}{2\sigma^{2}}y^{2}\right\}} dy + \mu \int_{-\infty}^{\infty} \exp{\left\{-\frac{1}{2\sigma^{2}}y^{2}\right\}} dy\right\} \\
+        &= \frac{1}{(2\pi\sigma)^{1/2}} \cdot \mu(2\pi\sigma^{2})^{1/2} \qquad \left(\because y \exp{\left\{-\frac{1}{2\sigma^{2}}y^{2}\right\}}\ \text{は奇関数}\right) \\
+        &= \mu
+    \end{aligned}
+\end{align}
+となり，\eqref{eq:1.49} を得る．次に，ガウス分布が \eqref{eq:1.50} を満たすことを確かめる．ガウス分布の規格化条件の両辺を $\sigma^{2}$ に関して微分すると，
+\begin{equation}
+    \frac{\partial}{\partial \sigma^{2}} \int_{-\infty}^{\infty} \CN(x \mid \mu,\sigma^{2}) dx = 0
+\end{equation}
+であり，ガウス分布 $\CN(x \mid \mu,\sigma^{2})$ は $(x,\sigma^{2}) \in \BR^{2}$ において連続 $(\ast)$ であることに注意すると，
+\begin{align}
+    \begin{aligned}
+        \frac{\partial}{\partial \sigma^{2}} \int_{-\infty}^{\infty} \CN(x \mid \mu,\sigma^{2}) dx &= \int_{-\infty}^{\infty} \frac{\partial}{\partial \sigma^{2}} \CN(x \mid \mu,\sigma^{2}) dx \qquad (\because \text{条件}\ (\ast)) \\
+        &= \int_{-\infty}^{\infty} \frac{\partial}{\partial \sigma^{2}} \left\{\frac{1}{(2\pi\sigma^{2})^{1/2}} \exp{\left\{-\frac{1}{2\sigma^{2}}(x-\mu)^{2}\right\}}\right\} dx \\
+        &= \int_{-\infty}^{\infty} \left\{-\frac{1}{2} (2\pi\sigma^{2})^{-3/2} \cdot 2\pi \cdot \exp{\left\{-\frac{1}{2\sigma^{2}}(x-\mu)^{2}\right\}}\right. \\
+        &\left.\qquad\quad + \frac{1}{(2\pi\sigma^{2})^{1/2}}  \exp{\left\{-\frac{1}{2\sigma^{2}}(x-\mu)^{2}\right\}} \cdot \left(\frac{1}{2\sigma^{4}}(x-\mu)^{2}\right) \right\} dx \\
+        &= -\frac{\pi}{(2\pi\sigma^{2})^{3/2}} \int_{-\infty}^{\infty} \exp{\left\{-\frac{1}{2\sigma^{2}}(x-\mu)^{2}\right\}} dx \\
+        &\qquad\quad + \frac{1}{2\sigma^{4}} \int_{-\infty}^{\infty} (x-\mu)^{2} \frac{1}{(2\pi\sigma^{2})} \exp{\left\{-\frac{1}{2\sigma^{2}}(x-\mu)^{2}\right\}} dx \\
+        &= -\frac{\pi}{(2\pi\sigma^{2})^{3/2}} \cdot (2\pi\sigma^{2})^{1/2} \\
+        &\qquad\quad + \frac{1}{2\sigma^{4}} \left(\BE[x^{2}] - 2\mu\BE[x] + \mu^{2} \int_{-\infty}^{\infty} \CN(x \mid \mu,\sigma^{2}) dx \right) \\
+        &= -\frac{1}{2\sigma^{2}} + \frac{1}{2\sigma^{4}} \left(\BE[x^{2}] - \mu^{2}\right) \qquad (\because \eqref{eq:1.127})
+    \end{aligned}
+\end{align}
+ゆえ，
+\begin{equation}
+    -\frac{1}{2\sigma^{2}} + \frac{1}{2\sigma^{4}} \left(\BE[x^{2}] - \mu^{2}\right) = 0 \iff \BE[x^{2}] = \mu^{2} + \sigma^{2}
+\end{equation}
+となり，\eqref{eq:1.50} が成り立つ．\eqref{eq:1.51} については，\eqref{eq:1.49} および \eqref{eq:1.50} より明らか．\qed
+
+\item[1.9 (基本)] \fbox{www} ガウス分布 \eqref{eq:1.46} のモード (つまり分布が最大となる $x$ の値) が $\mu$ で与えられることを示せ．同様に，多変量ガウス分布 \eqref{eq:1.52} のモードは $\bs{\mu}$ で与えられることを示せ．
+
+\item[(解答)] まず，ガウス分布 \eqref{eq:1.46} については
+\begin{align}
+    \begin{aligned}
+        \frac{\partial}{\partial x} \CN(x \mid \mu,\sigma^{2}) &= \frac{\partial}{\partial x} \left\{\frac{1}{(2\pi\sigma^{2})^{1/2}} \exp{\left\{-\frac{1}{2\sigma^{2}}(x-\mu)^{2}\right\}}\right\} \\
+        &= \frac{1}{(2\pi\sigma^{2})^{1/2}} \left(-\frac{x-\mu}{\sigma^{2}}\right)\exp{\left\{-\frac{1}{2\sigma^{2}}(x-\mu)^{2}\right\}}
+    \end{aligned}
+\end{align}
+ゆえ，$x \le \mu$ で $\CN(x \mid \mu,\sigma^{2})$ は増加，$x \ge 0$ で $\CN(x \mid \mu,\sigma^{2})$ は減少するので，モードは $\mu$ で与えられる．次に，多変量ガウス分布 \eqref{eq:1.52} のモードが $\bs{\mu}$ で与えられることを示す．多変量ガウス分布 \eqref{eq:1.42} を $\bs{x}$ で微分すると，共分散 $\Sigma$ は対称行列ゆえ，
+\begin{align}
+    \begin{aligned}
+        \frac{\partial}{\partial{\bs{x}}} \CN(\bs{x} \mid \bs{\mu}, \bs{\Sigma}) &= \frac{\partial}{\partial{\bs{x}}} \left\{\frac{1}{(2\pi)^{D/2}} \frac{1}{|\bs{\Sigma}|^{1/2}} \exp{\left\{-\frac{1}{2}(\bs{x}-\bs{\mu})^{\top}\bs{\Sigma}^{-1}(\bs{x}-\bs{\mu})\right\}}\right\} \\
+        &= \frac{1}{(2\pi)^{D/2}} \frac{1}{|\bs{\Sigma}|^{1/2}} \exp{\left\{-\frac{1}{2}(\bs{x}-\bs{\mu})^{\top}\bs{\Sigma}^{-1}(\bs{x}-\bs{\mu})\right\}} \cdot \left(-\frac{1}{2} \cdot 2 \Sigma^{-1} (\bs{x}-\bs{\mu})\right) \\
+        &= \frac{1}{(2\pi)^{D/2}} \frac{1}{|\bs{\Sigma}|^{1/2}} \exp{\left\{-\frac{1}{2}(\bs{x}-\bs{\mu})^{\top}\bs{\Sigma}^{-1}(\bs{x}-\bs{\mu})\right\}} \Sigma^{-1} (\bs{x}-\bs{\mu})
+    \end{aligned}
+\end{align}
+となるので，モードは $\bs{\mu}$ で与えられる．\qed
+
+\item[1.10 (基本)] \fbox{www} 2変数 $x,z$ が統計的に独立であるとする．それらの和の平均と分散が
+\begin{align}
+    \BE[x+z] &= \BE[x] + \BE[z] \label{eq:1.128}\\
+    \BV[x+z] &= \BV[x] + \BV[z] \label{eq:1.129}
+\end{align}
+を満たすことを示せ．
+
+\item[(解答)] \eqref{eq:1.128} については期待値の線形性より明らか．\eqref{eq:1.129} については
+\begin{align}
+    \begin{aligned}
+        \BV[x+z] &= \BE[(x+z)^{2}] - \BE[x+z]^{2} \\
+        &= \BE[x^{2}] + 2\BE[xz] + \BE[z^{2}] - (\BE[x]^{2} + 2\BE[x]\BE[z] + \BE[z]^{2}) \\
+        &= \BE[x^{2}] - \BE[x]^{2} + \BE[z^{2}] - \BE[z]^{2} \qquad (\because x,z\ \text{が独立} \Rightarrow \BE[xz] = \BE[x]\BE[z]) \\
+        &= \BV[x] + \BV[z]
+    \end{aligned}
+\end{align}
+ゆえ成り立つ．\qed
+
+\item[1.11 (基本)] 対数尤度関数 \eqref{eq:1.54} の $\mu$ と $\sigma^{2}$ に関する微分を0とおいて，\eqref{eq:1.55} と \eqref{eq:1.56} を確かめよ．
+
+\item[(解答)] まず，\eqref{eq:1.55} については，
+\begin{equation}
+    \frac{\partial}{\partial{\mu}} \ln p(\mb{x} \mid \mu,\sigma^{2}) = \frac{\partial}{\partial{\mu}} \left\{-\frac{1}{2\sigma^{2}} \sum_{n=1}^{N} (x_{n}-\mu)^{2} - \frac{N}{2} \ln \sigma^{2} - \frac{N}{2} \ln (2\pi)\right\} = \frac{1}{\sigma^{2}} \sum_{n=1}^{N} (x_{n}-\mu)
+\end{equation}
+より，
+\begin{equation}
+    \left.\frac{\partial}{\partial{\mu}} \ln p(\mb{x} \mid \mu,\sigma^{2})\right|_{\mu=\mu_{\text{ML}}} = 0 \iff \mu_{\text{ML}} = \frac{1}{N} \sum_{n=1}^{N} x_{n}
+\end{equation}
+ゆえ成り立つ．次に，\eqref{eq:1.56} については，
+\begin{align}
+    \begin{aligned}
+        \frac{\partial}{\partial{\sigma^{2}}} \ln p(\mb{x} \mid \mu_{\text{ML}},\sigma^{2}) &= \frac{\partial}{\partial{\sigma^{2}}} \left\{-\frac{1}{2\sigma^{2}} \sum_{n=1}^{N} (x_{n}-\mu_{\text{ML}})^{2} - \frac{N}{2} \ln \sigma^{2} - \frac{N}{2} \ln (2\pi)\right\} \\
+        &= \frac{1}{2\sigma^{4}} \sum_{n=1}^{N} (x_{n}-\mu_{\text{ML}})^{2} - \frac{N}{2\sigma^{2}}
+    \end{aligned}
+\end{align}
+より，
+\begin{equation}
+    \left.\frac{\partial}{\partial{\sigma^{2}}} \ln p(\mb{x} \mid \mu_{\text{ML}},\sigma^{2})\right|_{\sigma^{2}=\sigma_{\text{ML}}^{2}} = 0 \iff \sigma_{\text{ML}}^{2} = \frac{1}{N} \sum_{n=1}^{N} (x_{n}-\mu_{\text{ML}})^{2}
+\end{equation}
+ゆえ成り立つ．\qed
+
+\item[1.12 (標準)] \fbox{www} \eqref{eq:1.49} と \eqref{eq:1.50} を使って
+\begin{equation} \label{eq:1.130}
+    \BE[x_{n}x_{m}] = \mu^{2} + I_{nm}\sigma^{2}
+\end{equation}
+を示せ．ただし，$x_{n}$ と $x_{m}$ は平均 $\mu$，分散 $\sigma^{2}$ のガウス分布から生成されたデータ点を表し，$I_{nm}$ は $n=m$ のとき $I_{nm}=1$ でそれ以外は $I_{nm}=0$ であるとする．これから，\eqref{eq:1.57} と \eqref{eq:1.58} を証明せよ．
+
+\item[(解答)] $n=m$ のときは，演習 1.8 の結果より，
+\begin{equation}
+    \BE[x_{n}x_{m}] = \BE[x_{n}^{2}] = \mu^{2} + \sigma^{2}
+\end{equation}
+となり，\eqref{eq:1.130} が成り立つ．$n \neq m$ のときは，$x_{n},x_{m} \overset{\text{i.i.d.}}{\sim} \CN(x \mid \mu,\sigma^{2})$ より，
+\begin{equation}
+    \BE[x_{n}x_{m}] = \BE[x_{n}]\BE[x_{m}] = \mu^{2}
+\end{equation}
+となり，$n=m$ のときと同様に \eqref{eq:1.130} が成り立つ．これを用いて \eqref{eq:1.57} と \eqref{eq:1.58} を示す．まず，\eqref{eq:1.57} は
+\begin{equation}
+    \BE[\mu_{\text{ML}}] = \BE\left[\frac{1}{N} \sum_{n=1}^{N} x_{n}\right] = \frac{1}{N} \sum_{n=1}^{N} \BE[x_{n}] = \frac{1}{N} \cdot N\mu = \mu
+\end{equation}
+ゆえ成り立つ．次に，\eqref{eq:1.58} は，
+\begin{align}
+    \begin{aligned}
+        \BE[\sigma_{\text{ML}}^{2}] &= \BE\left[\frac{1}{N} \sum_{n=1}^{N} (x_{n}-\mu_{\text{ML}})^{2}\right] = \frac{1}{N} \sum_{n=1}^{N} \left(\BE[x_{n}^{2}] - 2\BE[x_{n}\mu_{\text{ML}}] + \BE[\mu_{\text{ML}}^{2}]\right) \\
+        &= \frac{1}{N} \sum_{n=1}^{N} \left(\mu^{2} + \sigma^{2} - 2\BE\left[x_{n} \frac{1}{N} \sum_{m=1}^{N} x_{m}\right] + \BE\left[\frac{1}{N^{2}} \left(\sum_{n=1}^{N} x_{n}\right)^{2}\right]\right) \\
+        &= \frac{1}{N} \sum_{n=1}^{N} \left(\mu^{2} + \sigma^{2} - \frac{2}{N} \BE\left[x_{n}^{2} + \sum_{m \neq n} x_{n}x_{m}\right] + \frac{1}{N^{2}} \BE\left[\sum_{n=1}^{N} \sum_{m=1}^{N} x_{n}x_{m}\right]\right) \\
+        &= \frac{1}{N} \sum_{n=1}^{N} \left(\mu^{2} + \sigma^{2} - \frac{2}{N} \left(\BE[x_{n}^{2}] + (N-1) \BE[x_{n}x_{m}]\right) \right.\\
+        &\qquad \qquad \qquad \qquad \qquad \qquad \left.+ \frac{1}{N^{2}} \left(N \BE[x_{n}^{2}] + N(N-1) \BE[x_{n}x_{m}]\right)\right) \qquad (n \neq m) \\
+        &= \frac{1}{N} \sum_{n=1}^{N} \left(\mu^{2} + \sigma^{2} - \frac{2}{N} \left(\mu^{2} + \sigma^{2} + (N-1)\mu^{2}\right) + \frac{1}{N} \left(\mu^{2} + \sigma^{2} + (N-1)\mu^{2}\right)\right) \\
+        &= \frac{1}{N} \sum_{n=1}^{N} \left(\mu^{2} + \sigma^{2} - 2 \mu^{2} - \frac{2}{N} \sigma^{2} + \mu^{2} + \frac{1}{N} \sigma^{2}\right) \\
+        &= \frac{1}{N} \sum_{n=1}^{N} \left(\frac{N-1}{N}\right) \sigma^{2} = \left(\frac{N-1}{N}\right) \sigma^{2}
+    \end{aligned}
+\end{align}
+ゆえ成り立つ．\qed
+
+\end{description}
+
+\newpage
+\thispagestyle{plain}
+
+\begin{thebibliography}{9}
+    \bibitem{prml} Christopher.M.Bishop 著. 元田浩／栗田多喜夫／樋口知之／松本裕治／村田昇 監訳. \tb{パターン認識と機械学習 上 -- ベイズ理論による統計的予測}. 丸善出版, 2012.
+    \bibitem{math-stat} 久保川達也. \tb{現代数理統計学の基礎}. 共立出版, 2017.
+\end{thebibliography}
+
+\end{document}

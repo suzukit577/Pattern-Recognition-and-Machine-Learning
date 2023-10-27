@@ -1,0 +1,211 @@
+\documentclass[uplatex,11pt,dvipdfmx,aspectratio=169,unicode,t]{beamer}
+
+% 和文用
+\usepackage[utf8]{inputenc}
+\usepackage{bxdpx-beamer}
+\usepackage{pxjahyper}
+\usepackage{minijs} % 和文用
+%\usefonttheme{serif}
+\renewcommand{\kanjifamilydefault}{\gtdefault} % 和文用
+\usepackage{mathtools}
+\usepackage{amssymb}
+\usepackage{epic,eepic}
+\usepackage{color}
+\usepackage{caption}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage[subrefformat=parens]{subcaption}
+\usepackage{overpic}
+\usepackage{tikz}
+\usetikzlibrary{intersections, calc, arrows.meta}
+\usepackage[normalem]{ulem}
+\usepackage[english]{babel}
+\usepackage{media9}
+\usepackage{ascmac}
+\usepackage{url}
+\usepackage{paralist}
+
+% スライドの見た目
+\usetheme[
+    block=fill, % ブロックに背景をつける
+    progressbar=foot, % 各スライドの下にプログレスバー
+    numbering=fraction % 合計ページ数を表示
+]{metropolis}
+%\setbeamercolor{structure}{fg=blue}
+\usefonttheme{professionalfonts} % 数式のフォント設定
+\setbeamertemplate{frametitle}[default] % フレームタイトルの色(?)
+\setbeamertemplate{navigation symbols}{} % プログレスバーを非表示
+\setbeamercovered{transparent} % 好みに応じてどうぞ(?)
+\setbeamertemplate{footline}[page number] % ページ下部にページ番号を表示
+\setbeamerfont{footline}{size=\normalsize,series=\bfseries} %
+\setbeamercolor{footline}{fg=black,bg=black} % footlineの色？
+
+% ブロックの色
+\setbeamercolor{block title} % ブロックのタイトル部分の色
+{fg=black, bg=white!80!black} % fg: 文字色, bg: 背景色
+\setbeamercolor{block body} % ブロックの中身の色
+{fg=black, bg=black!10!white} % fg: 文字色, bg: 背景色
+
+% ページ番号
+\setbeamerfont{frame numbering}{size=\large}
+
+% 図表のキャプション設定
+\renewcommand{\figurename}{}
+\renewcommand{\tablename}
+%\newcommand{\backupbegin}{
+%   \newcounter{framenumberappendix}
+%   \setcounter{framenumberappendix}{\value{framenumber}}
+%}
+%\newcommand{\backupend}{
+%   \addtocounter{framenumberappendix}{-\value{framenumber}}
+%   \addtocounter{framenumber}{\value{framenumberappendix}}
+%}
+
+% フォント基本設定
+\usepackage[T1]{fontenc}%8bit フォント
+\usepackage{textcomp}%欧文フォントの追加
+\usepackage[utf8]{inputenc}%文字コードをUTF-8
+\usepackage{otf}%otfパッケージ
+%\usepackage{lxfonts}%数式・英文ローマン体を Lxfont にする
+%\usepackage{bm}%数式太字
+%%%%%%%%%%
+\allowdisplaybreaks[4]
+\setbeamertemplate{enumerate items}[default]
+
+% 目次のフォントサイズ
+\setbeamerfont{section number projected}{size=\normalsize}
+\setbeamerfont{section in toc}{size=\normalsize}
+\setbeamerfont{subsection number projected}{size=\footnotesize}
+\setbeamerfont{subsection in toc}{size=\footnotesize}
+
+% % セクションページの設定
+% \makeatletter
+% \setbeamertemplate{section page}{
+%     \centering
+%     \begin{minipage}{\linewidth}
+%         \raggedright
+%         \usebeamercolor[fg]{section title}
+%         \usebeamerfont{section title}
+%         \insertsectionhead\\[-1ex]
+%         \usebeamertemplate*{progress bar in section page}
+%         \par
+%         \ifx\insertsubsectionhead\@empty\else%
+%         \usebeamercolor[fg]{subsection title}%
+%         \usebeamerfont{subsection title}%
+%         \insertsubsectionhead
+%         \fihttps://ja.overleaf.com/project/643cfee13796af4f26269008
+%     \end{minipage}
+%     \par
+%     \vspace{\baselineskip}
+% }
+% \makeatother
+
+% \metroset{sectionpage=simple} % セクションページの設定その2
+
+% 数式の定義環境
+\captionsetup{compatibility=false}
+\setbeamertemplate{theorems}[numbered]
+\newtheorem{dfn}{Definition}
+\newtheorem{thm}{Theorem}
+\newtheorem{prop}{Proposition}
+\newtheorem{lem}{Lemma}
+\newtheorem{cor}{Corollary}
+\newtheorem{rmk}{Remark}
+\newtheorem{ex}{Example}
+\newtheorem{claim}{Claim}
+\def\co{\colon\thinspace}
+
+% 数式番号の設定
+\numberwithin{equation}{section}
+% 参照する数式のみナンバリングする
+\mathtoolsset{showonlyrefs=true}
+
+% コマンドの設定
+\newcommand{\BC}{\mathbb{C}}
+\newcommand{\BE}{\mathbb{E}}
+\newcommand{\BK}{\mathbb{K}}
+\newcommand{\BN}{\mathbb{N}}
+\newcommand{\BP}{\mathbb{P}}
+\newcommand{\BR}{\mathbb{R}}
+\newcommand{\BV}{\mathbb{V}}
+\newcommand{\BZ}{\mathbb{Z}}
+\newcommand{\CC}{\mathcal{C}}
+\newcommand{\CD}{\mathcal{D}}
+\newcommand{\CH}{\mathcal{H}}
+\newcommand{\CN}{\mathcal{N}}
+\newcommand{\CO}{\mathcal{O}}
+\newcommand{\CR}{\mathcal{R}}
+\newcommand{\CS}{\mathcal{S}}
+\newcommand{\mf}[1]{\mathfrak{S}}
+\newcommand{\mr}[1]{\mathrm{#1}}
+\newcommand{\mb}[1]{\mathbf{#1}}
+\newcommand{\tr}[1]{\textrm{#1}}
+\newcommand{\tb}[1]{\textbf{#1}}
+\newcommand{\ts}[1]{\textsf{#1}}
+\newcommand{\ip}[1]{\left \langle #1 \right \rangle}
+\newcommand{\diff}[2]{\frac{d}{d#1} {#2}}
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+\newcommand{\ti}[1]{\textit{#1}}
+\newcommand{\pd}[1]{\frac{\partial}{\partial#1}}
+\newcommand{\pdd}[1]{\frac{{\partial}^{2}}{{\partial}^{2}#1}}
+\newcommand{\1}{\bs{1}}
+\newcommand{\0}{\bs{0}}
+\newcommand{\GL}[2]{GL_{#1}{#2}}
+\newcommand{\st}{\mathrm{\ s.t.\ }}
+\newcommand{\id}[1]{\mathrm{id}_{#1}}
+\newcommand{\norm}[1]{\|#1\|}
+
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\rank}{rank}
+\DeclareMathOperator*{\diag}{diag}
+
+\newcommand{\showmovie}[1]{\centering\includemedia[
+    activate=pageopen,
+    deactivate=pageclose,
+    width=30pt, height=30pt,
+    addresource=#1,
+    flashvars={
+        src=#1
+        &loop=true
+        &autoPlay=false
+    }
+    ]{}{StrobeMediaPlayback.swf}
+}
+
+% セクションごとの目次ページの設定
+\AtBeginSection[]{
+    \begin{frame}\frametitle{Outline}
+        \tableofcontents[currentsection]
+    \end{frame}
+}
+
+\title{PRML輪読会\\確率的生成モデル (4.2 節)}
+\author{鈴木拓己}
+\institute{}
+\date{\today}
+
+\begin{document}
+
+\begin{frame}[plain]
+    \titlepage
+\end{frame}
+
+\begin{frame}\frametitle{Outline}
+    \tableofcontents
+\end{frame}
+
+\section{確率的生成モデルの枠組み}
+
+\section{連続値入力}
+
+\section{最尤解}
+
+\section{離散特徴}
+
+\section{指数型分布族}
+
+\section{演習問題 (Appendix)}
+
+\end{document}
